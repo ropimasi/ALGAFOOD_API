@@ -2,7 +2,11 @@
 package dev.ronaldomarques.algafood.api.controller;
 
 
+import static dev.ronaldomarques.algafood.infrastructure.exception.DescritorDeException.descreverExcecao;
+import static dev.ronaldomarques.algafood.infrastructure.exception.DescritorDeException.descreverInesperadaException;
+import static dev.ronaldomarques.algafood.infrastructure.service.MescladorAtributos.mesclarAtributos;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,17 +20,15 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import dev.ronaldomarques.algafood.domain.exception.EntidadeEmUsoException;
 import dev.ronaldomarques.algafood.domain.exception.EntidadeNaoEncontradaException;
 import dev.ronaldomarques.algafood.domain.exception.EntidadeNaoPersistidaException;
-import dev.ronaldomarques.algafood.domain.model.entity.Restaurante;
+import dev.ronaldomarques.algafood.domain.model.entity.RestauranteEntity;
 import dev.ronaldomarques.algafood.domain.model.repository.RestauranteRepository;
 import dev.ronaldomarques.algafood.domain.service.RestauranteCadastroService;
 import dev.ronaldomarques.algafood.infrastructure.exception.ArgumentoIlegalException;
 import dev.ronaldomarques.algafood.infrastructure.exception.PercistenciaException;
-import static dev.ronaldomarques.algafood.infrastructure.exception.DescritorDeException.*;
-import static dev.ronaldomarques.algafood.infrastructure.service.MescladorAtributos.mesclarAtributos;
-
 
 
 
@@ -39,8 +41,9 @@ import static dev.ronaldomarques.algafood.infrastructure.service.MescladorAtribu
  */
 
 @RestController // @Controller + @ResponseBody + Outras...
-@RequestMapping(value = "/restaurantes", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "/restaurantes", produces = MediaType.APPLICATION_JSON_VALUE)
 public class RestauranteController {
+	
 	@Autowired
 	private RestauranteRepository restauranteRepo;
 	
@@ -53,10 +56,10 @@ public class RestauranteController {
 	/* Didático: @ResponseStatus(HttpStatus.CREATED) esta notação pode ser colocada para definir o status padrão no caso
 	 * de método realizado com sucesso, porém, o método não pode possuir outras possibilidades de status já que esta
 	 * notação sobrescreve outros status vindos pelos 'ResponseEntity' or 'redirect'. */
-	public ResponseEntity<?> adicionar(@RequestBody Restaurante restaurante) {
+	public ResponseEntity<?> adicionar(@RequestBody RestauranteEntity restauranteEntity) {
 		
 		try {
-			return ResponseEntity.status(HttpStatus.CREATED).body(restauranteCadastroServ.salvar(restaurante));
+			return ResponseEntity.status(HttpStatus.CREATED).body(restauranteCadastroServ.salvar(restauranteEntity));
 		}
 		catch (EntidadeNaoEncontradaException excep) { // De: .salvar().
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(excep.getMessage());
@@ -82,7 +85,7 @@ public class RestauranteController {
 	public ResponseEntity<?> listar() {
 		
 		try {
-			return ResponseEntity.status(HttpStatus.OK).body(restauranteRepo.listar());
+			return ResponseEntity.status(HttpStatus.OK).body(restauranteRepo.findAll());
 		}
 		catch (ArgumentoIlegalException excep) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(descreverExcecao(excep));
@@ -101,27 +104,19 @@ public class RestauranteController {
 	@GetMapping("/{id}")
 	public ResponseEntity<?> buscar(@PathVariable Long id) {
 		
+		var tmpReturnRestaurante = new RestauranteEntity();
+		
 		try {
-			Restaurante restaurante = restauranteRepo.buscar(id);
-			
-			if (restaurante != null) {
-				return ResponseEntity.status(HttpStatus.OK).body(restaurante);
-			}
-			else {
-				/* Didático: Abordagem alterniativa de tratar como uma EXCEPTION para padronizar as mensagens de erro e
-				 * retorno para o consumidor da API.
-				 * 
-				 * return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); */
-				throw new EntidadeNaoEncontradaException(
-						"\tEntidade:\tRestaurante;\n"
-								+ "\tMétodo:\t\t.buscar(id);\n"
-								+ "\tStatus:\t\tFalho;\n"
-								+ "\tCausa:\t\tNão há registro na base de dados, para esta entidade, com chave-primária"
-								+ " de valor igual o argumento passado 'id=" + id + "';\n"
-								+ "\tSugestões:\tVerifique se o valor do argumento passado 'id=" + id + "' é correto,"
-								+ " ou considere adicionar o registro com tal chave primária antes de buscá-lo.");
-			}
-			
+			tmpReturnRestaurante = restauranteRepo.findById(id)
+					.orElseThrow(() -> new EntidadeNaoEncontradaException(
+							"\tEntidade:\tRestaurante;\n"
+									+ "\tMétodo:\t\t.findbyId(id);\n"
+									+ "\tStatus:\t\tFalho;\n"
+									+ "\tCausa:\t\tNão há registro na base de dados, para esta entidade, com chave-primária"
+									+ " de valor igual o argumento passado 'id=" + id + "';\n"
+									+ "\tSugestões:\tVerifique se o valor do argumento passado 'id=" + id
+									+ "' é correto,"
+									+ " ou considere adicionar o registro com tal chave primária antes de buscá-lo."));
 		}
 		catch (EntidadeNaoEncontradaException excep) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(descreverExcecao(excep));
@@ -134,39 +129,33 @@ public class RestauranteController {
 					.body(descreverInesperadaException(excep));
 		}
 		
+		return ResponseEntity.status(HttpStatus.OK).body(tmpReturnRestaurante);
+		
 	}
 	
 	
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody Restaurante restauranteNovo) {
+	public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody RestauranteEntity restauranteNovo) {
 		
 		/**
-		 * Atualiza a entidade 'Restaurante' que possui valor 'id' em seu atributo 'id' na base de dados, salvando a
-		 * nova entidade 'Restaurante' representada por 'restauranteNovo' em seu lugar.
+		 * Atualiza a entidade 'RestauranteEntity' que possui valor 'id' em seu atributo 'id' na base de dados, salvando
+		 * a nova entidade 'RestauranteEntity' representada por 'restauranteNovo' em seu lugar.
 		 */
+		
+		var restauranteAtual = new RestauranteEntity();
+		
 		try {
-			Restaurante restauranteAtual = restauranteRepo.buscar(id);
-			
-			if (restauranteAtual != null) {
-				restauranteNovo.setId(restauranteAtual.getId());
-				return ResponseEntity.status(HttpStatus.OK).body(restauranteCadastroServ.salvar(restauranteNovo));
-			}
-			else {
-				/* Didático: Abordagem alterniativa de tratar como uma EXCEPTION para padronizar as mensagens de erro e
-				 * retorno para o consumidor da API.
-				 * 
-				 * return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); */
-				throw new EntidadeNaoEncontradaException(
-						"\tEntidade:\tRestaurante;\n"
-								+ "\tMétodo:\t\t.atualizar(id);\n"
-								+ "\tStatus:\t\tFalho;\n"
-								+ "\tCausa:\t\tNão há registro na base de dados, para esta entidade, com chave-primária"
-								+ " de valor igual o argumento passado 'id=" + id + "';\n"
-								+ "\tSugestões:\tVerifique se o valor do argumento passado 'id=" + id + "' é correto,"
-								+ " ou considere adicionar o registro com tal chave primária antes de atualizá-lo.");
-			}
-			
+			restauranteAtual = restauranteRepo.findById(id)
+					.orElseThrow(() -> new EntidadeNaoEncontradaException(
+							"\tEntidade:\tRestaurante;\n"
+									+ "\tMétodo:\t\t.atualizar(id);\n"
+									+ "\tStatus:\t\tFalho;\n"
+									+ "\tCausa:\t\tNão há registro na base de dados, para esta entidade, com chave-primária"
+									+ " de valor igual o argumento passado 'id=" + id + "';\n"
+									+ "\tSugestões:\tVerifique se o valor do argumento passado 'id=" + id
+									+ "' é correto,"
+									+ " ou considere adicionar o registro com tal chave primária antes de atualizá-lo."));
 		}
 		catch (EntidadeNaoEncontradaException excep) { // De: .buscar() <- .find()
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(descreverExcecao(excep));
@@ -182,6 +171,9 @@ public class RestauranteController {
 					descreverInesperadaException(excep));
 		}
 		
+		restauranteNovo.setId(restauranteAtual.getId());
+		return ResponseEntity.status(HttpStatus.OK).body(restauranteCadastroServ.salvar(restauranteNovo));
+		
 	}
 	
 	
@@ -191,34 +183,23 @@ public class RestauranteController {
 			@RequestBody Map<String, Object> atributosValores) {
 		
 		/**
-		 * Atualiza parcialmente, na entidade 'Restaurante', aquele objeto que possui seu atributo 'Restaurante.id' com
+		 * Atualiza parcialmente, na entidade 'RestauranteEntity', aquele objeto que possui seu atributo
+		 * 'RestauranteEntity.id' com
 		 * valor do argumento 'id', salvando os novos atributos passados no corpo da requisição e representados pelo
 		 * 'Map atributosValores' sobre seus atributos.
 		 */
 		
+		var restauranteAtual = new RestauranteEntity();
+		
 		try {
-			Restaurante restauranteAtual = restauranteRepo.buscar(id);
-			
-			if (restauranteAtual != null) {
-				mesclarAtributos(atributosValores, restauranteAtual);
-				return atualizar(id, restauranteAtual); // Isto fara:
-														// return ResponseEntity.ok(restauranteAtual).body();
-			}
-			else {
-				/* Didático: Abordagem alterniativa de tratar como uma EXCEPTION para padronizar as mensagens de erro e
-				 * retorno para o consumidor da API.
-				 * 
-				 * return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); */
-				throw new EntidadeNaoEncontradaException(
-						"\tEntidade:\tRestaurante;\n"
-								+ "\tMétodo:\t\t.atualizarParcial(id);\n"
-								+ "\tStatus:\t\tFalho;\n"
-								+ "\tCausa:\t\tNão há registro na base de dados, para esta entidade, com chave-primária"
-								+ " de valor igual o argumento passado 'id=" + id + "';\n"
-								+ "\tSugestões:\tVerifique se o valor do argumento passado 'id=" + id + "' é correto,"
-								+ " ou considere adicionar o registro com tal chave primária antes de atualizá-lo.");
-			}
-			
+			restauranteAtual = restauranteRepo.findById(id).orElseThrow(() -> new EntidadeNaoEncontradaException(
+					"\tEntidade:\tRestaurante;\n"
+							+ "\tMétodo:\t\t.atualizarParcial(id);\n"
+							+ "\tStatus:\t\tFalho;\n"
+							+ "\tCausa:\t\tNão há registro na base de dados, para esta entidade, com chave-primária"
+							+ " de valor igual o argumento passado 'id=" + id + "';\n"
+							+ "\tSugestões:\tVerifique se o valor do argumento passado 'id=" + id + "' é correto,"
+							+ " ou considere adicionar o registro com tal chave primária antes de atualizá-lo."));
 		}
 		catch (EntidadeNaoEncontradaException excep) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(descreverExcecao(excep));
@@ -230,6 +211,9 @@ public class RestauranteController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.body(descreverInesperadaException(excep));
 		}
+		
+		mesclarAtributos(atributosValores, restauranteAtual);
+		return atualizar(id, restauranteAtual); // Isto fara: return ResponseEntity.ok(restauranteAtual).body()...etc;
 		
 	}
 	
@@ -254,6 +238,7 @@ public class RestauranteController {
 		}
 		
 	}
+	
 }
 
 /* Didático:

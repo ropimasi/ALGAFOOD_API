@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import dev.ronaldomarques.algafood.domain.exception.EntidadeEmUsoException;
 import dev.ronaldomarques.algafood.domain.exception.EntidadeNaoEncontradaException;
 import dev.ronaldomarques.algafood.domain.exception.EntidadeNaoPersistidaException;
-import dev.ronaldomarques.algafood.domain.model.entity.Estado;
+import dev.ronaldomarques.algafood.domain.model.entity.EstadoEntity;
 import dev.ronaldomarques.algafood.domain.model.repository.EstadoRepository;
 import dev.ronaldomarques.algafood.domain.service.EstadoCadastroService;
 import dev.ronaldomarques.algafood.infrastructure.exception.ArgumentoIlegalException;
@@ -35,7 +35,7 @@ import dev.ronaldomarques.algafood.infrastructure.exception.ArgumentoIlegalExcep
  */
 
 @RestController // @Controller + @ResponseBody + Outras...
-@RequestMapping(value = "/estados", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "/estados", produces = MediaType.APPLICATION_JSON_VALUE)
 public class EstadoController {
 	@Autowired
 	private EstadoRepository estadoRepo;
@@ -46,10 +46,10 @@ public class EstadoController {
 	
 	
 	@PostMapping
-	public ResponseEntity<?> adicionar(@RequestBody Estado estado) {
+	public ResponseEntity<?> adicionar(@RequestBody EstadoEntity estadoEntity) {
 		
 		try {
-			return ResponseEntity.status(HttpStatus.CREATED).body(estadoCadastroServ.salvar(estado));
+			return ResponseEntity.status(HttpStatus.CREATED).body(estadoCadastroServ.salvar(estadoEntity));
 		}
 		catch (EntidadeNaoPersistidaException excep) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
@@ -68,7 +68,7 @@ public class EstadoController {
 	public ResponseEntity<?> listar() {
 		
 		try {
-			return ResponseEntity.status(HttpStatus.OK).body(estadoRepo.listar());
+			return ResponseEntity.status(HttpStatus.OK).body(estadoRepo.findAll());
 		}
 		catch (Exception excep) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(excep.getMessage());
@@ -82,7 +82,7 @@ public class EstadoController {
 	public ResponseEntity<?> buscar(@PathVariable Long id) {
 		
 		try {
-			return ResponseEntity.ok(estadoRepo.buscar(id));
+			return ResponseEntity.ok(estadoRepo.findById(id).get());
 		}
 		catch (EntidadeNaoEncontradaException excep) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(excep.getMessage());
@@ -96,7 +96,7 @@ public class EstadoController {
 	
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody Estado estadoNovo) {
+	public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody EstadoEntity estadoNovo) {
 		estadoNovo.setId(id);
 		
 		try {
