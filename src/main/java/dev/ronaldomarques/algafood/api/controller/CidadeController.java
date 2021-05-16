@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import dev.ronaldomarques.algafood.domain.exception.EntidadeEmUsoException;
 import dev.ronaldomarques.algafood.domain.exception.EntidadeNaoEncontradaException;
 import dev.ronaldomarques.algafood.domain.exception.EntidadeNaoPersistidaException;
-import dev.ronaldomarques.algafood.domain.model.entity.Cidade;
+import dev.ronaldomarques.algafood.domain.model.entity.CidadeEntity;
 import dev.ronaldomarques.algafood.domain.model.repository.CidadeRepository;
 import dev.ronaldomarques.algafood.domain.service.CidadeCadastroService;
 import dev.ronaldomarques.algafood.infrastructure.exception.ArgumentoIlegalException;
@@ -35,7 +35,7 @@ import dev.ronaldomarques.algafood.infrastructure.exception.ArgumentoIlegalExcep
  */
 
 @RestController // @Controller + @ResponseBody + Outras...
-@RequestMapping(value = "/cidades", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "/cidades", produces = MediaType.APPLICATION_JSON_VALUE)
 public class CidadeController {
 	@Autowired
 	private CidadeRepository cidadeRepo;
@@ -46,10 +46,10 @@ public class CidadeController {
 	
 	
 	@PostMapping
-	public ResponseEntity<?> adicionar(@RequestBody Cidade cidade) {
+	public ResponseEntity<?> adicionar(@RequestBody CidadeEntity cidadeEntity) {
 		
 		try {
-			return ResponseEntity.status(HttpStatus.CREATED).body(cidadeCadastroServ.salvar(cidade));
+			return ResponseEntity.status(HttpStatus.CREATED).body(cidadeCadastroServ.salvar(cidadeEntity));
 		}
 		catch (EntidadeNaoPersistidaException excep) { // De: .salvar() <- .buscar() <- .find().
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
@@ -68,7 +68,7 @@ public class CidadeController {
 	public ResponseEntity<?> listar() {
 		
 		try {
-			return ResponseEntity.status(HttpStatus.OK).body(cidadeRepo.listar());
+			return ResponseEntity.status(HttpStatus.OK).body(cidadeRepo.findAll());
 		}
 		catch (Exception excep) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(excep.getMessage());
@@ -83,7 +83,7 @@ public class CidadeController {
 		
 		try {
 			System.out.println("debug 1");
-			return ResponseEntity.ok(cidadeRepo.buscar(id));
+			return ResponseEntity.ok(cidadeRepo.findById(id).get());
 		}
 		catch (EntidadeNaoEncontradaException excep) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(excep.getMessage());
@@ -102,7 +102,7 @@ public class CidadeController {
 	
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody Cidade cidadeNova) {
+	public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody CidadeEntity cidadeNova) {
 		cidadeNova.setId(id);
 		
 		try {

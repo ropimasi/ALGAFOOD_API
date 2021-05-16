@@ -1,23 +1,25 @@
 package dev.ronaldomarques.algafood.domain.model.repository;
 
-import java.util.List;
 
-import dev.ronaldomarques.algafood.domain.model.entity.Estado;
-
-/* Este é um repositório orientado à persistencia: 'POR'. */
-
-/* Quando um 'repository' é orientado à 'collection' ele tem como uma das abstrações imitar uma 'collection'. E os
- * tipos 'collections' seguem padrões de nomenclatura próprios, por exemplo:
- * public abstract Cozinha guardar(Cozinha cozinha);
- * public abstract void eliminar(Cozinha cozinha);
- * public abstract Cozinha porId(Long id);
- * public abstract List<Cozinha> todas(); */
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import dev.ronaldomarques.algafood.domain.model.entity.EstadoEntity;
 
 
 
-public interface EstadoRepository {
-	public abstract Estado gravar(Estado estado);
-	public abstract Estado remover(Long id);
-	public abstract Estado buscar(Long id);
-	public abstract List<Estado> listar();
+@Repository
+public interface EstadoRepository extends JpaRepository<EstadoEntity, Long> {
+	/* Este ERA um repositório orientado à persistencia: 'POR'. */
+	/* Quando um 'repository' é orientado à 'collection' ele tem como uma das abstrações imitar uma 'collection'. E os
+	 * tipos 'collections' seguem padrões de nomenclatura próprios, por exemplo:
+	 * public abstract CozinhaEntity guardar(CozinhaEntity cozinha);
+	 * public abstract void eliminar(CozinhaEntity cozinha);
+	 * public abstract CozinhaEntity porId(Long id);
+	 * public abstract List<CozinhaEntity> todas(); */
+	
+	/* Métodos comentados para dar lugar ao modo JpaHibernate: */
+	/* public abstract EstadoEntity gravar(EstadoEntity estado);
+	 * public abstract EstadoEntity remover(Long id);
+	 * public abstract EstadoEntity buscar(Long id);
+	 * public abstract List<EstadoEntity> listar(); */
 }

@@ -2,6 +2,8 @@
 package dev.ronaldomarques.algafood.api.controller;
 
 
+import static dev.ronaldomarques.algafood.infrastructure.exception.DescritorDeException.descreverExcecao;
+import static dev.ronaldomarques.algafood.infrastructure.exception.DescritorDeException.descreverInesperadaException;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,13 +20,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import dev.ronaldomarques.algafood.domain.exception.EntidadeEmUsoException;
 import dev.ronaldomarques.algafood.domain.exception.EntidadeNaoEncontradaException;
-import dev.ronaldomarques.algafood.domain.model.entity.Cozinha;
+import dev.ronaldomarques.algafood.domain.model.entity.CozinhaEntity;
 import dev.ronaldomarques.algafood.domain.model.repository.CozinhaRepository;
 import dev.ronaldomarques.algafood.domain.service.CozinhaCadastroService;
 import dev.ronaldomarques.algafood.infrastructure.exception.ArgumentoIlegalException;
 import dev.ronaldomarques.algafood.infrastructure.exception.PercistenciaException;
-import static dev.ronaldomarques.algafood.infrastructure.exception.DescritorDeException.*;
-
 
 
 
@@ -37,8 +37,9 @@ import static dev.ronaldomarques.algafood.infrastructure.exception.DescritorDeEx
  */
 
 @RestController // @Controller + @ResponseBody + Outras...
-@RequestMapping(value = "/cozinhas", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "/cozinhas", produces = MediaType.APPLICATION_JSON_VALUE)
 public class CozinhaController {
+	
 	@Autowired
 	private CozinhaRepository cozinhaRepo;
 	
@@ -51,10 +52,10 @@ public class CozinhaController {
 	/* Didático: @ResponseStatus(HttpStatus.CREATED) esta notação pode ser colocada para definir o status padrão no caso
 	 * de método realizado com sucesso, porém, o método não pode possuir outras possibilidades de status já que esta
 	 * notação sobrescreve outros status vindos pelos 'ResponseEntity' or 'redirect'. */
-	public ResponseEntity<?> adicionar(@RequestBody Cozinha cozinha) {
+	public ResponseEntity<?> adicionar(@RequestBody CozinhaEntity cozinhaEntity) {
 		
 		try {
-			return ResponseEntity.status(HttpStatus.CREATED).body(cozinhaCadastroServ.salvar(cozinha));
+			return ResponseEntity.status(HttpStatus.CREATED).body(cozinhaCadastroServ.salvar(cozinhaEntity));
 		}
 		catch (ArgumentoIlegalException excep) { // De: .salvar() <- .gravar() <- .merge().
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(descreverExcecao(excep));
@@ -75,7 +76,7 @@ public class CozinhaController {
 	public ResponseEntity<?> listar() {
 		
 		try {
-			return ResponseEntity.status(HttpStatus.OK).body(cozinhaRepo.listar());
+			return ResponseEntity.status(HttpStatus.OK).body(cozinhaRepo.findAll());
 		}
 		catch (ArgumentoIlegalException excep) { // De: .listar() <- .getResultList().
 			/* Este é um INTERNAL_SERVER_ERROR conforme descrição em seu '___RepositoryImpl.java' */
@@ -95,12 +96,12 @@ public class CozinhaController {
 		try {
 			/* Didático: Como .buscar() .procurar() .pegar() não alteram o status da aplicação, então pode acessar
 			 * diretamente o repositório. */
-			return ResponseEntity.status(HttpStatus.OK).body(cozinhaRepo.pegar(id));
+			return ResponseEntity.status(HttpStatus.OK).body(cozinhaRepo.findById(id).get());
 			/* Didático: se houver regras de negócio na operação de buscar um recurso, estas regras ficam na camada
 			 * 'service', devendo então, usar o método a baixo: */
 			// return ResponseEntity.status(HttpStatus.OK).body(cozinhaCadastroServ.procurar(id));
 		}
-		catch (EntidadeNaoEncontradaException excep) { // De: .pegar() <- .find().
+		catch (EntidadeNaoEncontradaException excep) { // De: .findById() <- .find().
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(descreverExcecao(excep));
 		}
 		catch (ArgumentoIlegalException excep) { // De: .pegar() <- .find().
@@ -116,11 +117,11 @@ public class CozinhaController {
 	
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody Cozinha cozinhaNova) {
+	public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody CozinhaEntity cozinhaNova) {
 		
 		/**
-		 * Atualiza a entidade 'Cozinha' que possui valor 'id' em seu atributo 'id' na base de dados, salvando a
-		 * nova entidade 'Cozinha' representada por 'cozinhaNova' em seu lugar.
+		 * Atualiza a entidade 'CozinhaEntity' que possui valor 'id' em seu atributo 'id' na base de dados, salvando a
+		 * nova entidade 'CozinhaEntity' representada por 'cozinhaNova' em seu lugar.
 		 */
 		try {
 			cozinhaNova.setId(id);
@@ -149,7 +150,8 @@ public class CozinhaController {
 			@RequestBody Map<String, Object> atributosValores) {
 		
 		/**
-		 * Atualiza parcialmente, na entidade 'Cozinha', aquele objeto que possui seu atributo 'Cozinha.id' com
+		 * Atualiza parcialmente, na entidade 'CozinhaEntity', aquele objeto que possui seu atributo 'CozinhaEntity.id'
+		 * com
 		 * valor do argumento 'id', salvando os novos atributos passados no corpo da requisição e representados pelo
 		 * 'Map atributosValores' sobre seus atributos.
 		 */
@@ -195,6 +197,7 @@ public class CozinhaController {
 		}
 		
 	}
+	
 }
 
 /* Didático:

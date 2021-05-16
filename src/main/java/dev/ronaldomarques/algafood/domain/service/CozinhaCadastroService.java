@@ -10,7 +10,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import dev.ronaldomarques.algafood.domain.exception.EntidadeEmUsoException;
 import dev.ronaldomarques.algafood.domain.exception.EntidadeNaoEncontradaException;
-import dev.ronaldomarques.algafood.domain.model.entity.Cozinha;
+import dev.ronaldomarques.algafood.domain.model.entity.CozinhaEntity;
 import dev.ronaldomarques.algafood.domain.model.repository.CozinhaRepository;
 
 
@@ -30,7 +30,7 @@ public class CozinhaCadastroService {
 	
 	
 	
-	public Cozinha salvar(Cozinha cozinhaNova) {
+	public CozinhaEntity salvar(CozinhaEntity cozinhaNova) {
 		/**
 		 * Persiste os dados do argumento 'cozinha' dentro de sua respectiva entidade do atual contexto de persistência,
 		 * tanto em modo 'create'(ou adicionar novo) quanto modo 'update'(ou atualizar existente).
@@ -61,7 +61,7 @@ public class CozinhaCadastroService {
 		else {
 			/* Objeto-argumento oriundo da 'controller.atualizar()'. */
 			
-			Cozinha cozinhaAtual = cozinhaRepo.pegar(id);
+			CozinhaEntity cozinhaAtual = cozinhaRepo.pegar(id);
 			
 			if (cozinhaAtual != null) { // Existe a cozinha para atualiza-la.
 				return cozinhaRepo.gravar(cozinhaNova);
@@ -87,14 +87,14 @@ public class CozinhaCadastroService {
 	
 	
 	
-	public Cozinha salvarParcial(Long id, Map<String, Object> atributosValores) {
+	public CozinhaEntity salvarParcial(Long id, Map<String, Object> atributosValores) {
 		/**
 		 * Prepara condições necessárias para a persistência dos dados do Map-argumento 'atributosValores' dentro da
-		 * entidade 'Cozinha' do atual contexto de persistência, no registro com atributo 'id' de valor passado no
+		 * entidade 'CozinhaEntity' do atual contexto de persistência, no registro com atributo 'id' de valor passado no
 		 * argumento 'id'.
 		 * @param  id                             número inteiro-longo representando chave-primária na entidade de
 		 *                                        persistência;
-		 * @throws EntidadeNaoEncontradaException se não for encontrado objeto persistido na entidade 'Cozinha' com o
+		 * @throws EntidadeNaoEncontradaException se não for encontrado objeto persistido na entidade 'CozinhaEntity' com o
 		 *                                        atributo 'id' de valor igual do argumento 'id' passado;
 		 * @return                                uma instância em estado <b><i>managed</i></b> da entidade que foi
 		 *                                        salva na persistência;
@@ -107,11 +107,11 @@ public class CozinhaCadastroService {
 		 * 
 		 * Regra de negócio #2: Devido à funcionalidade auto-incremento na base de dados deste projeto, somente é
 		 * permitido atualizar objetos com atributo 'id' de valor já existente, nunca um valor ainda não persistido. */
-		Cozinha cozinhaAtual = cozinhaRepo.pegar(id);
+		CozinhaEntity cozinhaAtual = cozinhaRepo.pegar(id);
 		
 		if (cozinhaAtual != null) {
 			mesclarAtributos(atributosValores, cozinhaAtual);
-			return salvar(cozinhaAtual); // Isto fara: return 'Cozinha';
+			return salvar(cozinhaAtual); // Isto fara: return 'CozinhaEntity';
 		}
 		else {
 			/* Didático: Abordagem alterniativa de tratar como uma EXCEPTION para padronizar as mensagens de erro e
@@ -131,7 +131,7 @@ public class CozinhaCadastroService {
 	
 	
 //  Este método procurar(...) é uma abordagem alternativa.	
-//	public Cozinha procurar(Long id) {
+//	public CozinhaEntity procurar(Long id) {
 //		/* Didático: aqui vão regras de negócio se houver. E...
 //		 * Como .buscar() .procurar() .pegar() , por enquanto neste projeto, não alteram o status da aplicação, então a
 //		 * 'controller' pode acessar diretamente o 'repository', não utilizando este método, mas manterei-o aqui como
@@ -141,7 +141,7 @@ public class CozinhaCadastroService {
 	
 	
 	
-	public Cozinha excluir(Long id) {
+	public CozinhaEntity excluir(Long id) {
 		/**
 		 * Persiste os dados do argumento 'cozinha' dentro de sua respectiva entidade do atual contexto de persistência,
 		 * tanto em modo 'create'(ou adicionar novo) quanto modo 'update'(ou atualizar existente).
@@ -162,10 +162,10 @@ public class CozinhaCadastroService {
 		}
 		catch (EmptyResultDataAccessException excep) {
 			throw new EntidadeNaoEncontradaException(
-					String.format("Cozinha 'id = %d' não pode ser removida, pois não existe. ", id));
+					String.format("CozinhaEntity 'id = %d' não pode ser removida, pois não existe. ", id));
 		}
 		catch (DataIntegrityViolationException excep) {
-			throw new EntidadeEmUsoException("Cozinha 'id = " + id + "' não pode ser removida, pois está em uso. ");
+			throw new EntidadeEmUsoException("CozinhaEntity 'id = " + id + "' não pode ser removida, pois está em uso. ");
 		}
 		
 	}
