@@ -26,7 +26,7 @@ public class CidadeCadastroService {
 	
 	
 	
-	public CidadeEntity salvar(CidadeEntity cidadeEntity) {
+	public CidadeEntity salvar(CidadeEntity cidadeNova) {
 		/**
 		 * Aplica regras de negócio e salva a insancia 'estado' na base de dados, como novo registro se seu
 		 * atributo 'cidade.id' é nulo, ou como atualização se seu atributo 'cidade.id' possui valor.
@@ -41,22 +41,22 @@ public class CidadeCadastroService {
 		try {
 			/* Regra de negócio: para salvar um objeto 'cidade' é obrigatório atribuir ao atributo 'estado' do objeto
 			 * 'cidade' um estado existente na DB. */
-			EstadoEntity estadoEntity = estadoRepo.findById(cidadeEntity.getEstado().getId())
+			EstadoEntity estadoEntity = estadoRepo.findById(cidadeNova.getEstado().getId())
 					.orElseThrow(() -> new EmptyResultDataAccessException(
 							"estadoRepo.findById(cidade.getEstado().getId()) = EstadoEntity não encontrado. Ou cidade está"
 									+ " sem estado. Só pode salvar com estado existente no DB.",
 							1));
 			
-			cidadeEntity.setEstado(estadoEntity);
+			cidadeNova.setEstado(estadoEntity);
 			
-			return cidadeRepo.save(cidadeEntity);
+			return cidadeRepo.save(cidadeNova);
 		}
 		catch (IllegalArgumentException excep) { // Somente se chamada pela Controller.atualizar().
 			/* Até o presente momento, não há regras de negócio aplicáveis neste escopo (service) para sanar de forma
 			 * programática as possíveis EXCEPTIONS, sendo assim, as mesmas serão repassadas ao escopo superior
 			 * (controller), porém, traduzidas, para melhor exepriência do usuários consumidor da API. */
 			throw new ArgumentoIlegalException(
-					"Entidade cidade com atributo 'id=" + cidadeEntity.getId()
+					"Entidade cidade com atributo 'id=" + cidadeNova.getId()
 							+ "' passada como argumento em 'cadastroService.salva()' não está em estado 'managed'.\n");
 		}
 		
@@ -68,9 +68,11 @@ public class CidadeCadastroService {
 		
 		/* Aqui vão as regras de negócio.
 		 * Tais como condições obrigatórias, validações. */
+		
 		try {
 			CidadeEntity tmpReturnCidade =
-					cidadeRepo.findById(id).orElseThrow(() -> new EntidadeNaoEncontradaException(id.toString()));
+					cidadeRepo.findById(id).orElseThrow(() -> new EntidadeNaoEncontradaException(
+							"Entidade com id=" + id.toString() + "não encontrada no 'cidadeRepo.findById(id);'"));
 			cidadeRepo.deleteById(id);
 			return tmpReturnCidade;
 		}
@@ -81,10 +83,11 @@ public class CidadeCadastroService {
 		catch (DataIntegrityViolationException excep) {
 			throw new EntidadeEmUsoException(
 					String.format("CidadeEntity 'id=%d' não pode ser removido, pois está em uso. ", id));
-		} /* catch (Exception excep) {
-			 * throw new RuntimeException(
-			 * String.format("Erro INESPERADO na exclusão CidadeEntity 'id=%d'. ", id));
-			 * } */
+		}
+		catch (Exception excep) {
+			throw new RuntimeException(
+					String.format("Erro INESPERADO na exclusão CidadeEntity 'id=%d'. ", id));
+		}
 		
 	}
 	

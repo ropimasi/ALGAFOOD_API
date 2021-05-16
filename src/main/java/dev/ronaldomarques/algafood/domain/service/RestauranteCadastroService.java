@@ -14,18 +14,15 @@ import dev.ronaldomarques.algafood.infrastructure.exception.ArgumentoIlegalExcep
 
 
 
-
 @Service
 public class RestauranteCadastroService {
+	
 	@Autowired
 	private RestauranteRepository restauranteRepo;
 	
-	// @Autowired
-	// private CozinhaRepository cozinhaRepo;
 	
 	
-	
-	public RestauranteEntity salvar(RestauranteEntity restauranteEntity) {
+	public RestauranteEntity salvar(RestauranteEntity restauranteNovo) {
 		/**
 		 * Aplica regras de negócio-domínio e salva entidade 'restaurante' na base de dados, como novo registro se seu
 		 * atributo 'id' é nulo, ou como atualização se seu atributo 'id' possui valor:
@@ -41,7 +38,7 @@ public class RestauranteCadastroService {
 		 * Tais como condições obrigatórias, validações. */
 		
 		try {
-			return restauranteRepo.gravar(restauranteEntity);
+			return restauranteRepo.save(restauranteNovo);
 		}
 		catch (IllegalArgumentException excep) { // De: .gravar() <- .merge().
 			/* Até o presente momento, não há regras de negócio aplicáveis neste escopo (service) para sanar de forma
@@ -56,7 +53,8 @@ public class RestauranteCadastroService {
 					+ "Operação:\t'atribuir';\n"
 					+ "Status:\t\tFalhou! Regra de negócio: Como atributo de 'Restaurantes' somente as entidades"
 					+ " 'CozinhaEntity' previamente existente na base de dados podem ser atribuidas.\n"
-					+ "Causa:\t\tObjeto com identificador 'restaurante.cozinha.id = " + restauranteEntity.getCozinha().getId()
+					+ "Causa:\t\tObjeto com identificador 'restaurante.cozinha.id = "
+					+ restauranteNovo.getCozinha().getId()
 					+ "' não encontrado na base de dados. \n"
 					+ "Sugestões:\tVerifique se o valor do identificador está correto, ou considere adiocioná-lo à base"
 					+ " de dados antes de atribuí-lo.\n");
@@ -70,8 +68,13 @@ public class RestauranteCadastroService {
 		
 		/* Aqui vão as regras de negócio.
 		 * Tais como condições obrigatórias, validações. */
+		
 		try {
-			return restauranteRepo.remover(id);
+			RestauranteEntity tmpReturnRestaurante =
+					restauranteRepo.findById(id).orElseThrow(() -> new EntidadeNaoEncontradaException(
+							"Entidade com id=" + id.toString() + "não encontrada no 'restauranteRepo.findById(id);'"));
+			restauranteRepo.deleteById(id);
+			return tmpReturnRestaurante;
 		}
 		catch (EmptyResultDataAccessException excep) {
 			throw new EntidadeNaoEncontradaException(
@@ -87,4 +90,5 @@ public class RestauranteCadastroService {
 		}
 		
 	}
+	
 }
