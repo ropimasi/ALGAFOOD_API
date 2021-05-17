@@ -199,17 +199,3 @@ public class CozinhaController {
 	}
 	
 }
-
-/* Didático:
- * Alternativas de return em 'controllers':
- * 
- * return ResponseEntity.status(HttpStatus.OK).body(cozinha);
- * return ResponseEntity.status(HttpStatus.OK).build();
- * return ResponseEntity.ok(cozinha);
- * 
- * Exemplo com redirecionamento de um caso FOUND:
- * 
- * HttpHeaders headers = new HttpHeaders();
- * headers.add(HttpHeaders.LOCATION, "http://localhost:8080/cozinhas");
- * 
- * return ResponseEntity.status(HttpStatus.FOUND).headers(headers).body(cozinha); */

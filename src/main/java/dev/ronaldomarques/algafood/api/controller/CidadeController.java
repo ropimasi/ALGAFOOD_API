@@ -25,7 +25,6 @@ import dev.ronaldomarques.algafood.infrastructure.exception.ArgumentoIlegalExcep
 
 
 
-
 /**
  * This is a simple didadic project. A RESTful-API built with on JAVA and Spring Framework.
  * @author Ronaldo Marques.
@@ -37,6 +36,7 @@ import dev.ronaldomarques.algafood.infrastructure.exception.ArgumentoIlegalExcep
 @RestController // @Controller + @ResponseBody + Outras...
 @RequestMapping(value = "/cidades", produces = MediaType.APPLICATION_JSON_VALUE)
 public class CidadeController {
+	
 	@Autowired
 	private CidadeRepository cidadeRepo;
 	
@@ -103,6 +103,7 @@ public class CidadeController {
 	
 	@PutMapping("/{id}")
 	public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody CidadeEntity cidadeNova) {
+		
 		cidadeNova.setId(id);
 		
 		try {
@@ -150,4 +151,5 @@ public class CidadeController {
 		}
 		
 	}
+	
 }

@@ -25,7 +25,6 @@ import dev.ronaldomarques.algafood.infrastructure.exception.ArgumentoIlegalExcep
 
 
 
-
 /**
  * This is a simple didadic project. A RESTful-API built with on JAVA and Spring Framework.
  * @author Ronaldo Marques.
@@ -37,6 +36,7 @@ import dev.ronaldomarques.algafood.infrastructure.exception.ArgumentoIlegalExcep
 @RestController // @Controller + @ResponseBody + Outras...
 @RequestMapping(value = "/estados", produces = MediaType.APPLICATION_JSON_VALUE)
 public class EstadoController {
+	
 	@Autowired
 	private EstadoRepository estadoRepo;
 	
@@ -97,6 +97,7 @@ public class EstadoController {
 	
 	@PutMapping("/{id}")
 	public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody EstadoEntity estadoNovo) {
+		
 		estadoNovo.setId(id);
 		
 		try {
@@ -137,23 +138,7 @@ public class EstadoController {
 		// Se chegar este ponto escapou de todas condições e exceções previtas: refatorar code.
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 				.body("Erro interno: 'EveryExceptionEcaped'. Contate desenvolvedor da API.");
+		
 	}
+	
 }
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
