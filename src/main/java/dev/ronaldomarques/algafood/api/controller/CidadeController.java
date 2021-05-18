@@ -82,6 +82,10 @@ public class CidadeController {
 	public ResponseEntity<?> buscar(@PathVariable Long id) {
 		
 		try {
+			/* Didático: Como .buscar() .procurar() .pegar() não alteram o status da aplicação, então pode acessar
+			 * diretamente o repositório. Nesta abordagem, se houver regras de negócio na operação de buscar um recurso,
+			 * estas regras ficam na camada 'service', devendo então, usar o método a baixo: */
+			// return ResponseEntity.status(HttpStatus.OK).body(cidadeCadastroServ.procurar(id));
 			System.out.println("debug 1");
 			return ResponseEntity.ok(cidadeRepo.findById(id).get());
 		}
@@ -147,7 +151,7 @@ public class CidadeController {
 		catch (Exception excep) {
 			// Se chegar este ponto escapou de todas condições e exceções previtas: refatorar code.
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body("Erro interno: 'EveryExceptionEcaped'. Contate desenvolvedor da API.\n" + excep.getMessage());
+					.body("Erro interno: Contate desenvolvedor da API.\n" + excep.getMessage());
 		}
 		
 	}

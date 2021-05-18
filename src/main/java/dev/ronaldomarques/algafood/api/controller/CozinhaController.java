@@ -32,7 +32,7 @@ import dev.ronaldomarques.algafood.infrastructure.exception.PercistenciaExceptio
  * This is a simple didadic project. A RESTful-API built with on JAVA and Spring Framework.
  * @author Ronaldo Marques.
  * @see    RestauranteController, CidadeController, EstadoController, FormaPagamentoController, PermissaoController...
- *         // TODO Terminar de listar demais 'controllers' na Javadocs tag 'see'.
+ *         // TODO: Terminar de listar demais 'controllers' na Javadocs tag 'see'.
  * @since  2020-09-09.
  */
 
@@ -49,18 +49,16 @@ public class CozinhaController {
 	
 	
 	@PostMapping
-	/* Didático: @ResponseStatus(HttpStatus.CREATED) esta notação pode ser colocada para definir o status padrão no caso
-	 * de método realizado com sucesso, porém, o método não pode possuir outras possibilidades de status já que esta
-	 * notação sobrescreve outros status vindos pelos 'ResponseEntity' or 'redirect'. */
 	public ResponseEntity<?> adicionar(@RequestBody CozinhaEntity cozinhaEntity) {
 		
 		try {
 			return ResponseEntity.status(HttpStatus.CREATED).body(cozinhaCadastroServ.salvar(cozinhaEntity));
 		}
-		catch (ArgumentoIlegalException excep) { // De: .salvar() <- .gravar() <- .merge().
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(descreverExcecao(excep));
+		catch (ArgumentoIlegalException excep) { // De: .salvar() <- .save() <- .merge().
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Objeto a ser adicionado precisa, obrigatóriamente, ter o atributo 'id' nulo."
+					+ excep.getMessage());
 		}
-		catch (PercistenciaException excep) { // De: .salvar() <- .gravar() <- .merge().
+		catch (PercistenciaException excep) { // De: .salvar() <- .save() <- .merge().
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(descreverExcecao(excep));
 		}
 		catch (Exception excep) { // De: origem inesperada.
@@ -78,11 +76,7 @@ public class CozinhaController {
 		try {
 			return ResponseEntity.status(HttpStatus.OK).body(cozinhaRepo.findAll());
 		}
-		catch (ArgumentoIlegalException excep) { // De: .listar() <- .getResultList().
-			/* Este é um INTERNAL_SERVER_ERROR conforme descrição em seu '___RepositoryImpl.java' */
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(descreverExcecao(excep));
-		}
-		catch (Exception excep) { // De: origem inesperada.
+		catch (Exception excep) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(descreverInesperadaException(excep));
 		}
 		
@@ -95,16 +89,15 @@ public class CozinhaController {
 		
 		try {
 			/* Didático: Como .buscar() .procurar() .pegar() não alteram o status da aplicação, então pode acessar
-			 * diretamente o repositório. */
-			return ResponseEntity.status(HttpStatus.OK).body(cozinhaRepo.findById(id).get());
-			/* Didático: se houver regras de negócio na operação de buscar um recurso, estas regras ficam na camada
-			 * 'service', devendo então, usar o método a baixo: */
+			 * diretamente o repositório. Nesta abordagem, se houver regras de negócio na operação de buscar um recurso,
+			 * estas regras ficam na camada 'service', devendo então, usar o método a baixo: */
 			// return ResponseEntity.status(HttpStatus.OK).body(cozinhaCadastroServ.procurar(id));
+			return ResponseEntity.status(HttpStatus.OK).body(cozinhaRepo.findById(id).get());
 		}
 		catch (EntidadeNaoEncontradaException excep) { // De: .findById() <- .find().
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(descreverExcecao(excep));
 		}
-		catch (ArgumentoIlegalException excep) { // De: .pegar() <- .find().
+		catch (ArgumentoIlegalException excep) { // De: .findById() <- .find().
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(descreverExcecao(excep));
 		}
 		catch (Exception excep) { // De: origem inesperada.
@@ -123,6 +116,7 @@ public class CozinhaController {
 		 * Atualiza a entidade 'CozinhaEntity' que possui valor 'id' em seu atributo 'id' na base de dados, salvando a
 		 * nova entidade 'CozinhaEntity' representada por 'cozinhaNova' em seu lugar.
 		 */
+		
 		try {
 			cozinhaNova.setId(id);
 			return ResponseEntity.status(HttpStatus.OK).body(cozinhaCadastroServ.salvar(cozinhaNova));
@@ -131,9 +125,6 @@ public class CozinhaController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(descreverExcecao(excep));
 		}
 		catch (ArgumentoIlegalException excep) { // De: .buscar() <- .find().
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(descreverExcecao(excep));
-		}
-		catch (PercistenciaException excep) { // De: .salvar() <- .gravar() <- .merge().
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(descreverExcecao(excep));
 		}
 		catch (Exception excep) { // De: origem inesperada.
@@ -151,8 +142,7 @@ public class CozinhaController {
 		
 		/**
 		 * Atualiza parcialmente, na entidade 'CozinhaEntity', aquele objeto que possui seu atributo 'CozinhaEntity.id'
-		 * com
-		 * valor do argumento 'id', salvando os novos atributos passados no corpo da requisição e representados pelo
+		 * com valor do argumento 'id', salvando os novos atributos passados no corpo da requisição e representados pelo
 		 * 'Map atributosValores' sobre seus atributos.
 		 */
 		
@@ -179,7 +169,7 @@ public class CozinhaController {
 	
 	
 	@DeleteMapping("/{id}")
-	public ResponseEntity<?> deletar(@PathVariable Long id) {
+	public ResponseEntity<?> remover(@PathVariable Long id) {
 		
 		try {
 			if (cozinhaCadastroServ.excluir(id) != null) return ResponseEntity.noContent().build();
@@ -192,8 +182,8 @@ public class CozinhaController {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body(descreverExcecao(excep));
 		}
 		catch (Exception excep) { // De: origem inesperada.
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-					descreverInesperadaException(excep));
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("Erro interno: Contate desenvolvedor da API.\n" + excep.getMessage());
 		}
 		
 	}

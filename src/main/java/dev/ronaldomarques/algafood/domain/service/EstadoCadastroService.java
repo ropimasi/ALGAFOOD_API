@@ -38,7 +38,7 @@ public class EstadoCadastroService {
 		 * @throws EntidadeNaoEncontradaException no caso de .salvar() por atualização: se o valor do objeto.atributo
 		 *                                        passado como argumento <b>estadoNova.id</b> é não-nulo porém não há
 		 *                                        registro na base de dados com tal valor;
-		 * @return                                uma instância em estado <b><i>managed</i></b> da entidade que foi
+		 *                                        uma instância em estado <b><i>managed</i></b> da entidade que foi
 		 *                                        salva na persistência;
 		 */
 		

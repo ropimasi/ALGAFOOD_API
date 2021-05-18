@@ -2,7 +2,7 @@
 package dev.ronaldomarques.algafood.api.controller;
 
 
-import javax.persistence.TransactionRequiredException;
+import static dev.ronaldomarques.algafood.infrastructure.exception.DescritorDeException.descreverInesperadaException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -29,7 +29,7 @@ import dev.ronaldomarques.algafood.infrastructure.exception.ArgumentoIlegalExcep
  * This is a simple didadic project. A RESTful-API built with on JAVA and Spring Framework.
  * @author Ronaldo Marques.
  * @see    CozinhaController, RestauranteController, CidadeController, FormaPagamentoController, PermissaoController...
- *         // TODO Terminar de listar demais 'controllers' na Javadocs tag 'see'.
+ *         // TODO: Terminar de listar demais 'controllers' na Javadocs tag 'see'.
  * @since  2020-09-09.
  */
 
@@ -46,18 +46,22 @@ public class EstadoController {
 	
 	
 	@PostMapping
-	public ResponseEntity<?> adicionar(@RequestBody EstadoEntity estadoEntity) {
+	public ResponseEntity<?> adicionar(@RequestBody EstadoEntity estadoNovo) {
 		
 		try {
-			return ResponseEntity.status(HttpStatus.CREATED).body(estadoCadastroServ.salvar(estadoEntity));
+			return ResponseEntity.status(HttpStatus.CREATED).body(estadoCadastroServ.salvar(estadoNovo));
 		}
-		catch (EntidadeNaoPersistidaException excep) {
+		catch (EntidadeNaoPersistidaException excep) { // De: .salvar() <- .save() <- .merge().
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
 					"Objeto a ser adicionado precisa, obrigatóriamente, ter o atributo 'id' nulo."
 							+ excep.getMessage());
 		}
-		catch (ArgumentoIlegalException excep) {
+		catch (ArgumentoIlegalException excep) { // De: .salvar() <- .save() <- .merge().
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(excep.getMessage());
+		}
+		catch (Exception excep) { // De: origem inesperada.
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+					descreverInesperadaException(excep));
 		}
 		
 	}
@@ -82,13 +86,21 @@ public class EstadoController {
 	public ResponseEntity<?> buscar(@PathVariable Long id) {
 		
 		try {
+			/* Didático: Como .buscar() .procurar() .pegar() não alteram o status da aplicação, então pode acessar
+			 * diretamente o repositório. Nesta abordagem, se houver regras de negócio na operação de buscar um recurso,
+			 * estas regras ficam na camada 'service', devendo então, usar o método a baixo: */
+			// return ResponseEntity.status(HttpStatus.OK).body(estadoCadastroServ.procurar(id));
 			return ResponseEntity.ok(estadoRepo.findById(id).get());
 		}
-		catch (EntidadeNaoEncontradaException excep) {
+		catch (EntidadeNaoEncontradaException excep) { // De: .findById() <- .find().
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(excep.getMessage());
 		}
-		catch (ArgumentoIlegalException excep) {
+		catch (ArgumentoIlegalException excep) { // De: .findById() <- .find().
 			return ResponseEntity.badRequest().body(excep.getMessage());
+		}
+		catch (Exception excep) { // De: origem inesperada.
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(descreverInesperadaException(excep));
 		}
 		
 	}
@@ -98,9 +110,13 @@ public class EstadoController {
 	@PutMapping("/{id}")
 	public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody EstadoEntity estadoNovo) {
 		
-		estadoNovo.setId(id);
+		/**
+		 * Atualiza a entidade 'EstadoEntity' que possui valor 'id' em seu atributo 'id' na base de dados, salvando a
+		 * nova entidade 'EstadoEntity' representada por 'cozinhaNova' em seu lugar.
+		 */
 		
 		try {
+			estadoNovo.setId(id);
 			return ResponseEntity.ok(estadoCadastroServ.salvar(estadoNovo));
 		}
 		catch (EntidadeNaoPersistidaException excep) { // id do recurso end-point não encontrado.
@@ -109,13 +125,22 @@ public class EstadoController {
 		catch (ArgumentoIlegalException excep) { // objeto estado não managed não pode atualizar.
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(excep.getMessage());
 		}
-		catch (TransactionRequiredException excep) { // falta de @transactional na chamada do método.
-			/* Conforme comentário nos escopos mais internos, esta falha tende a nunca acontecer, porém vide
-			 * comentários em 'EstadoRepositoryImlp.java'. */
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(excep.getMessage());
+		catch (Exception excep) { // De: origem inesperada.
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+					descreverInesperadaException(excep));
 		}
 		
 	}
+	
+	/* Já que a entidade 'Estado' só possui uma proprieadde(campo) além da chave primária, é inviável implementar método
+	 * '.atualizarParcial()' para ela.
+	 * 
+	 * @PatchMapping("/{id}")
+	 * public ResponseEntity<?> atualizarParcial(@PathVariable Long id,
+	 * 
+	 * @RequestBody Map<String, Object> atributosValores) {
+	 * return null;
+	 * } */
 	
 	
 	
