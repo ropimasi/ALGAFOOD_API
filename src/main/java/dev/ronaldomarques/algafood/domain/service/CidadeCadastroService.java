@@ -1,6 +1,8 @@
+/* Copyright notes... */
 package dev.ronaldomarques.algafood.domain.service;
 
 
+import javax.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -15,6 +17,13 @@ import dev.ronaldomarques.algafood.infrastructure.exception.ArgumentoIlegalExcep
 
 
 
+/**
+ * A simple didadic project. An RESTful-API based on JAVA and Spring Framework.
+ * @author Ronaldo Marques.
+ * @see    ...
+ * @since  ...
+ */
+
 @Service
 public class CidadeCadastroService {
 	
@@ -26,7 +35,7 @@ public class CidadeCadastroService {
 	
 	
 	
-	public CidadeEntity salvar(CidadeEntity cidadeEntity) {
+	public CidadeEntity salvar(CidadeEntity cidadeNova) {
 		/**
 		 * Aplica regras de negócio e salva a insancia 'estado' na base de dados, como novo registro se seu
 		 * atributo 'cidade.id' é nulo, ou como atualização se seu atributo 'cidade.id' possui valor.
@@ -36,28 +45,40 @@ public class CidadeCadastroService {
 		 *                                        ou não é instância de objeto.
 		 */
 		
-		/* Didático: Aqui vão as regras de negócio. Tais como condições obrigatórias, validações. */
+		/* Didático: Aqui vão as regras de negócio. Tais como condições obrigatórias, validações.
+		 * 
+		 * Regra de negócio #1: para salvar um objeto 'CidadeEntity' é obrigatório atribuir a seu atributo 'estado' um
+		 * objeto 'EstadoEntity' existente na DB. */
 		
 		try {
-			/* Regra de negócio: para salvar um objeto 'cidade' é obrigatório atribuir ao atributo 'estado' do objeto
-			 * 'cidade' um estado existente na DB. */
-			EstadoEntity estadoEntity = estadoRepo.findById(cidadeEntity.getEstado().getId())
-					.orElseThrow(() -> new EmptyResultDataAccessException(
-							"estadoRepo.findById(cidade.getEstado().getId()) = EstadoEntity não encontrado. Ou cidade está"
-									+ " sem estado. Só pode salvar com estado existente no DB.",
-							1));
-			
-			cidadeEntity.setEstado(estadoEntity);
-			
-			return cidadeRepo.save(cidadeEntity);
-		}
-		catch (IllegalArgumentException excep) { // Somente se chamada pela Controller.atualizar().
 			/* Até o presente momento, não há regras de negócio aplicáveis neste escopo (service) para sanar de forma
 			 * programática as possíveis EXCEPTIONS, sendo assim, as mesmas serão repassadas ao escopo superior
 			 * (controller), porém, traduzidas, para melhor exepriência do usuários consumidor da API. */
+			EstadoEntity estado = estadoRepo.findById(cidadeNova.getEstado().getId())
+					.orElseThrow(() -> new EmptyResultDataAccessException(
+							"estadoRepo.findById(cidade.getEstado().getId()) = EstadoEntity não encontrado. Ou cidade"
+									+ " está sem estado. Só pode salvar com estado existente no DB.",
+							1));
+			
+			cidadeNova.setEstado(estado);
+			
+			return cidadeRepo.save(cidadeNova);
+		}
+		catch (IllegalArgumentException excep) { // Somente se chamada pela Controller.atualizar().
 			throw new ArgumentoIlegalException(
-					"Entidade cidade com atributo 'id=" + cidadeEntity.getId()
-							+ "' passada como argumento em 'cadastroService.salva()' não está em estado 'managed'.\n");
+					"Entidade cidade com atributo 'id=" + cidadeNova.getId()
+							+ "' passada como argumento em 'cadastroService.salvar()' não está em estado 'managed'.\n");
+		}
+		catch (EntityNotFoundException excep) { // De: .save().
+			throw new EntidadeNaoEncontradaException("\n"
+					+ "Entidade:\tRestaurante;\n"
+					+ "Operação:\t'atribuir';\n"
+					+ "Status:\t\tFalhou! Regra de negócio: Como atributo de 'Cidades' somente as entidades"
+					+ " 'EstadoEntity' previamente existente na base de dados podem ser atribuidas.\n"
+					+ "Causa:\t\tObjeto com identificador 'cidade.estado.id = " + cidadeNova.getEstado().getId()
+					+ "' não encontrado na base de dados. \n"
+					+ "Sugestões:\tVerifique se o valor do identificador está correto, ou considere adiocioná-lo à base"
+					+ " de dados antes de atribuí-lo.\n");
 		}
 		
 	}
@@ -68,9 +89,11 @@ public class CidadeCadastroService {
 		
 		/* Aqui vão as regras de negócio.
 		 * Tais como condições obrigatórias, validações. */
+		
 		try {
 			CidadeEntity tmpReturnCidade =
-					cidadeRepo.findById(id).orElseThrow(() -> new EntidadeNaoEncontradaException(id.toString()));
+					cidadeRepo.findById(id).orElseThrow(() -> new EntidadeNaoEncontradaException(
+							"Entidade com id=" + id.toString() + "não encontrada no 'cidadeRepo.findById(id);'"));
 			cidadeRepo.deleteById(id);
 			return tmpReturnCidade;
 		}
@@ -81,10 +104,11 @@ public class CidadeCadastroService {
 		catch (DataIntegrityViolationException excep) {
 			throw new EntidadeEmUsoException(
 					String.format("CidadeEntity 'id=%d' não pode ser removido, pois está em uso. ", id));
-		} /* catch (Exception excep) {
-			 * throw new RuntimeException(
-			 * String.format("Erro INESPERADO na exclusão CidadeEntity 'id=%d'. ", id));
-			 * } */
+		}
+		catch (Exception excep) {
+			throw new RuntimeException(
+					String.format("Erro INESPERADO na exclusão CidadeEntity 'id=%d'. ", id));
+		}
 		
 	}
 	

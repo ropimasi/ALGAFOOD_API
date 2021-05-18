@@ -6,7 +6,6 @@ import static dev.ronaldomarques.algafood.infrastructure.exception.DescritorDeEx
 import static dev.ronaldomarques.algafood.infrastructure.exception.DescritorDeException.descreverInesperadaException;
 import static dev.ronaldomarques.algafood.infrastructure.service.MescladorAtributos.mesclarAtributos;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import dev.ronaldomarques.algafood.domain.exception.EntidadeEmUsoException;
 import dev.ronaldomarques.algafood.domain.exception.EntidadeNaoEncontradaException;
 import dev.ronaldomarques.algafood.domain.exception.EntidadeNaoPersistidaException;
@@ -240,17 +238,3 @@ public class RestauranteController {
 	}
 	
 }
-
-/* Didático:
- * Alternativas de return em 'controllers':
- * 
- * return ResponseEntity.status(HttpStatus.OK).body(restaurante);
- * return ResponseEntity.status(HttpStatus.OK).build();
- * return ResponseEntity.ok(restaurante);
- * 
- * Exemplo com redirecionamento de um caso FOUND:
- * 
- * HttpHeaders headers = new HttpHeaders();
- * headers.add(HttpHeaders.LOCATION, "http://localhost:8080/restaurantes");
- * 
- * return ResponseEntity.status(HttpStatus.FOUND).headers(headers).body(restaurante); */

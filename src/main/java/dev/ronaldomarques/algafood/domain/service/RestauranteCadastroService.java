@@ -1,3 +1,4 @@
+/* Copyright notes... */
 package dev.ronaldomarques.algafood.domain.service;
 
 
@@ -8,24 +9,33 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import dev.ronaldomarques.algafood.domain.exception.EntidadeEmUsoException;
 import dev.ronaldomarques.algafood.domain.exception.EntidadeNaoEncontradaException;
+import dev.ronaldomarques.algafood.domain.model.entity.CozinhaEntity;
 import dev.ronaldomarques.algafood.domain.model.entity.RestauranteEntity;
+import dev.ronaldomarques.algafood.domain.model.repository.CozinhaRepository;
 import dev.ronaldomarques.algafood.domain.model.repository.RestauranteRepository;
 import dev.ronaldomarques.algafood.infrastructure.exception.ArgumentoIlegalException;
 
 
 
+/**
+ * A simple didadic project. An RESTful-API based on JAVA and Spring Framework.
+ * @author Ronaldo Marques.
+ * @see    ...
+ * @since  ...
+ */
 
 @Service
 public class RestauranteCadastroService {
+	
 	@Autowired
 	private RestauranteRepository restauranteRepo;
 	
-	// @Autowired
-	// private CozinhaRepository cozinhaRepo;
+	@Autowired
+	private CozinhaRepository cozinhaRepo;
 	
 	
 	
-	public RestauranteEntity salvar(RestauranteEntity restauranteEntity) {
+	public RestauranteEntity salvar(RestauranteEntity restauranteNovo) {
 		/**
 		 * Aplica regras de negócio-domínio e salva entidade 'restaurante' na base de dados, como novo registro se seu
 		 * atributo 'id' é nulo, ou como atualização se seu atributo 'id' possui valor:
@@ -34,29 +44,40 @@ public class RestauranteCadastroService {
 		 * @throws EntidadeNaoEncontradaException se o objeto do tipo <b>CozinhaEntity</b> atribuido ao objeto.atributo
 		 *                                        <b>restaurante.cozinha</b> passado no argumento não estiver persistido
 		 *                                        na entidade <b>CozinhaEntity</b> da base de dados;
-		 * @see                                   RestauranteRepository.gravar().
 		 */
 		
-		/* Didático: Aqui vão as regras de negócio.
-		 * Tais como condições obrigatórias, validações. */
+		/* Didático: Aqui vão as regras de negócio. Tais como condições obrigatórias, validações.
+		 * 
+		 * Regra de negócio #1: para salvar um objeto 'RestauranteEntity' é obrigatório atribuir a seu atributo
+		 * 'CozinhaEntity' um objeto 'cozinha' existente na DB. */
 		
 		try {
-			return restauranteRepo.gravar(restauranteEntity);
-		}
-		catch (IllegalArgumentException excep) { // De: .gravar() <- .merge().
 			/* Até o presente momento, não há regras de negócio aplicáveis neste escopo (service) para sanar de forma
 			 * programática as possíveis EXCEPTIONS, sendo assim, as mesmas serão repassadas ao escopo superior
 			 * (controller), porém, traduzidas para melhor exepriência do usuários consumidor da API. */
-			throw new ArgumentoIlegalException(
-					"Entidade passada como argumento não está em estado 'managed'.\n");
+			CozinhaEntity cozinha = cozinhaRepo.findById(restauranteNovo.getId())
+					.orElseThrow(() -> new EmptyResultDataAccessException(
+							"cozinhaRepo.findById(restaurante.getCozinha().getId()) = CozinhaEntity não encontrado. Ou"
+									+ " restaurante está sem cozinha. Só pode salvar com cozinha existente no DB.",
+							1));
+			
+			restauranteNovo.setCozinha(cozinha);
+			
+			return restauranteRepo.save(restauranteNovo);
 		}
-		catch (EntityNotFoundException excep) { // De: .gravar().
+		catch (IllegalArgumentException excep) { // Somente se chamada pela Controller.atualizar().
+			throw new ArgumentoIlegalException(
+					"Entidade restaurante com atributo 'id=" + restauranteNovo.getId()
+							+ "' passada como argumento em 'cadastroService.salvar()' não está em estado 'managed'.\n");
+		}
+		catch (EntityNotFoundException excep) { // De: .save().
 			throw new EntidadeNaoEncontradaException("\n"
 					+ "Entidade:\tCozinha;\n"
 					+ "Operação:\t'atribuir';\n"
 					+ "Status:\t\tFalhou! Regra de negócio: Como atributo de 'Restaurantes' somente as entidades"
 					+ " 'CozinhaEntity' previamente existente na base de dados podem ser atribuidas.\n"
-					+ "Causa:\t\tObjeto com identificador 'restaurante.cozinha.id = " + restauranteEntity.getCozinha().getId()
+					+ "Causa:\t\tObjeto com identificador 'restaurante.cozinha.id = "
+					+ restauranteNovo.getCozinha().getId()
 					+ "' não encontrado na base de dados. \n"
 					+ "Sugestões:\tVerifique se o valor do identificador está correto, ou considere adiocioná-lo à base"
 					+ " de dados antes de atribuí-lo.\n");
@@ -70,8 +91,13 @@ public class RestauranteCadastroService {
 		
 		/* Aqui vão as regras de negócio.
 		 * Tais como condições obrigatórias, validações. */
+		
 		try {
-			return restauranteRepo.remover(id);
+			RestauranteEntity tmpReturnRestaurante =
+					restauranteRepo.findById(id).orElseThrow(() -> new EntidadeNaoEncontradaException(
+							"Entidade com id=" + id.toString() + "não encontrada no 'restauranteRepo.findById(id);'"));
+			restauranteRepo.deleteById(id);
+			return tmpReturnRestaurante;
 		}
 		catch (EmptyResultDataAccessException excep) {
 			throw new EntidadeNaoEncontradaException(
@@ -87,4 +113,5 @@ public class RestauranteCadastroService {
 		}
 		
 	}
+	
 }
