@@ -3,7 +3,7 @@ API RESTful para negócio fictício, no ramo de entregas oriundas de estabelecim
 [Painel SCRUM-KANBAN do Projecto: **não possui até o momento**](#).  
     
 *Started 202008170000-UTC/GMT/Z-time*  
-*Last change 202105171545-UTC/GMT/Z-time*  
+*Last change 202105181440-UTC/GMT/Z-time*  
   
 &nbsp;  
 &nbsp;  
@@ -20,31 +20,31 @@ Respositório do projéto didático de meu curso **Especialista Spring REST** qu
 <a name="lista-de-conteudo"></a>
 ## LISTA DE CONTEÚDO
 * [O QUÊ É](#o-que-e)
-* [VERSÕES](#versoes)
-  + [VERSIONAMENTO](#versionamento)
-    - [Exemplo](#versionamento-exemplo)
-  + [VERSÃO CORRENTE](#versao-corrente)
-  + [VERSÃO ANTERIOR](#versao-anterior)
-* [DIRETRIZ ROTEIRO](#diretriz)
-  + [VERSÃO FUTURA](#versao-futura)
-  + [VERSÃO OBJETIVO](#versao-objetivo)
-* [TECNOLOGIAS](#tecnologias)
+* [VERSIONS](#versions)
+  + [VERSIONING](#versioning)
+    - [Example](#versioning-example)
+  + [CURRENT VERSIONE](#current-version)
+  + [PREVIOUS VERSION](#previous-version)
+* [GUIDELINE ROADMAP](#guideline-roadmap)
+  + [NEXT VERSION](#next-version)
+  + [OBJECTIVE VERSION](#objective version)
+* [TECHNOLOGIES](#technolgies)
 * [GITFLOW](#gitflow)
-* [ARQUITETURA](#arquitetura)
-  + [CLASSES E SEUS PROPÓSITOS](#classes-propositos)
-* [AUTOR](#autor)  
+* [ARCHITECTURE](#archtecture)
+  + [CLASSES AND ITS PURPOSES](#classes-purposes)
+* [AUTHOR](#author)  
   
 &nbsp;  
 &nbsp;  
 &nbsp;  
   
-<a name="versoes"></a>
-## VERSÕES
+<a name="versions"></a>
+## VERSIONS
   
 <a name="versioning"></a>
-### VERSIONAMENTO
-In a team project, it is very important to know and follow the specifications of the project version. Although at the moment **DRYVE_CHALLENGE_1**'s status is under early development (as it has not its first stable version [1.0.0-released] released yet) its project already is designed under [**_SemVer_** (Semantic Versioning Specification)](http://semver.org/).  
-Thus, **DRYVE_CHALLENGE_1** uses **_SemVer_** for its versioning. **_SemVer_** is a specification (set of rules) that tells (or dictates) us how to use the numbers (and some letters) on the _versioning-expression_ (**_VerExpr_**). More specifically, **DRYVE_CHALLENGE_1** uses the following standardization: **_Major.Minor.Patch-ReleaseStatus+Build_**, where:  
+### VERSIONING
+In a team project, it is very important to know and follow the specifications of the project version. Although at the moment **ALGAFOOD_API**'s status is under early development (as it has not its first stable version [1.0.0-released] released yet) its project already is designed under [**_SemVer_** (Semantic Versioning Specification)](http://semver.org/).  
+Thus, **ALGAFOOD_API** uses **_SemVer_** for its versioning. **_SemVer_** is a specification (set of rules) that tells (or dictates) us how to use the numbers (and some letters) on the _versioning-expression_ (**_VerExpr_**). More specifically, **ALGAFOOD_API** uses the following standardization: **_Major.Minor.Patch-ReleaseStatus+Build_**, where:  
 * The standard values of **_Major_**, **_Minor_**, and **_Patch_** for the _VerExpr_ are as follows:
   + Positive integer decimal numbers, without zero remaining on the left;
   + **_Major_** version represents wider changes in the project, which affects the main structure of the project, or its main objectives, or the last user API released;
@@ -64,7 +64,7 @@ Thus, **DRYVE_CHALLENGE_1** uses **_SemVer_** for its versioning. **_SemVer_** i
   + The following 2 digits (mm) represent the minutes;
   + All referring to the moment when the developer builds/exports the application container **(* 1)**.  
   
-<a name="versionamento-exemplo"></a>
+<a name="versioning-example"></a>
 > Examplo de **_Build_**: "202112311745".  
   
 > (* 1) The numerical sequence _Build_ necessarily refers to Greenwich Mean Time (GMT), also known as Coordinated Universal Time (UTC), or "Z time" or "Zulu time".  
@@ -73,61 +73,51 @@ Thus, **DRYVE_CHALLENGE_1** uses **_SemVer_** for its versioning. **_SemVer_** i
   
 &nbsp;  
   
-<a name="versao-corrente"></a>
-### VERSÃO CORRENTE 0.1.0-dev
-Todas as funcionalidades da versão anteior, mais... / All features from last version, plus...  
-+ Correção de cadastro de modelos / Models registry correction
-  - Creating null properties' value, `500 internal server error` on request:  
-  > POST /models HTTP/1.1  
-  > Host: localhost:8080  
-  > Content-Type: application/json
-  > Body-Data: __an_object_representation__   
-  - Which responses:
-  > {
-  >   "trace": "org.springframework.dao.DataIntegrityViolationException: not-null property references a null or transient value : dev.ronaldomarques.dryve.challenge1.domain.model.entity.BrandEntity.name; nested exception is org.hibernate.PropertyValueException: not-null property references a null or transient value : dev.ronaldomarques.dryve.challenge1.domain.model.entity.BrandEntity.name\r\n\tat org.springframework.orm.jpa.vendor.HibernateJpaDialect.convertHibernateAccessException(HibernateJpaDialect.java:294)\r\n\tat org.springframework.orm.jpa.vendor.HibernateJpaDialect.translateExceptionIfPossible(HibernateJpaDialect.java:233)\r\n\tat org.springframework.orm.jpa.JpaTransactionManager.doCommit(JpaTransactionManager.java:566)\r\n\tat org.springframework.transaction.support...",
-  >   "message": "not-null property references a null or transient value : dev.ronaldomarques.dryve.challenge1.domain.model.entity.BrandEntity.name; nested exception is org.hibernate.PropertyValueException: not-null property references a null or transient value : dev.ronaldomarques.dryve.challenge1.domain.model.entity.BrandEntity.name",
-  >   "path": "/models"
-  > }  
-+ Features list and its breaf descriptions' corrected.
-  - On http-method `GET`, URI-end-point `/help`.
-+ BUG FOUND!
-  - On `II.3.2.2.2`;
-  - Class `MotorVehiclesController`;
-  - Method `.adicionar()`;
-  - Description: ...  
+<a name="current-version"></a>
+### CURRENT VERSION 0.1.0-dev
++ Feature X ...
+  - On http-method foo bar bax `GET`, URI-end-point `/X... lorem ipsum...`.
+  
++ Feature Y ...
+  - On http-method foo bar bax `GET`, URI-end-point `/X... lorem ipsum...`.
+  > foo, bar, baz.  
+  > qux, quux, quuz.  
+  > corge, grault, garply.  
+  > waldo, wibble, wobble, wubble.  
+  > fred, flob, plugh, xyzzyx, thud.  
+  
++ Feature Z...
+  - Lorem ipsum dolor sit amet.
+  > Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.  
+  > Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea  
+  > commodo consequat.  
   
 &nbsp;  
   
-<a name="versao-anterior"></a>
-### VERSÃO ANTERIOR 0.0.0-dev
-Todas as funcionalidades da versão anteior, mais... / All features from last version, plus...  
-+ Cadastro de marcas / Brands registry
-+ Cadastro de modelos / Models registry
-+ Cadastro de relações modelo-ano / Model-year relation registry
-+ Cadastro de veículos-anunciados *(automotores)* / Advertised vehicles registry (motor vehicles)
+<a name="previous-version"></a>
+### PREVIOUS VERSION 0.0.0-___
+Description...  
   
-###### More details about the past versions _(end-points, methods, features)_, see [project documentation, at `CHANGELOG.md`](project-resources/documentation/CHANGELOG.md "CHANGELOG.md").
+###### More details about the past versions _(end-points, methods, features)_, see [project documentation, at `project-resources/documentation/CHANGELOG.md`](project-resources/documentation/CHANGELOG.md "CHANGELOG.md").
   
 &nbsp;  
 &nbsp;  
 &nbsp;  
   
-<a name="diretriz-roteiro"></a>
-## DIRETRIZ ROTEIRO
+<a name="guideline-roadmap"></a>
+## GUIDELINE ROADMAP
   
-<a name="versao-futura"></a>
-### VERSÃO FUTURA 0.2.0-beta
+<a name="next-version"></a>
+### NEXT VERSION 0.2.0-beta
 All features from last version, plus...  
-+ Integration with KBB public API, geting the price for `price_KBB` object's atribute;
-+ Brands exclusion
-+ Models exclusion
-+ Model-year relation exclusion
-+ Motor vehicles exclusion  
++ Lorem ipsum dolor sit amet, consectetur adipiscing elit
++ sed do eiusmod tempor incididunt ut labore et dolore magna aliqua
++ Ut enim ad minim veniam
   
 &nbsp;  
   
-<a name="versao-objetivo"></a>
-### VERSÃO OBJETIVO 1.0.0-released
+<a name="objective-version"></a>
+### OBJECTIVE VERSION 1.0.0-released
 + Autoapresentação: retorna pequeno texto com nome e versão da aplicação, e uma instrução inicial. / Self-presentation: returns a smal text with application's version name, and an initial introduction.
 + Sumário de funcionalidades: retorna uma lista de cada end-point disponível no projeto e uma breve descrição de sua função. / Summary fo the features: returns a list of each avalable end-point in the project and a breif description of its fuction.
 + Listagem de cada URI / Listing of each URI
@@ -153,14 +143,14 @@ All features from last version, plus...
 + Consulta de **um** veículo-anunciado. / Consultation of a specific advertised vehicle (motor vehicle)
   - Por **uma** `placa`. Retorna uma `ResponseEntity` com uma instância do objedo consultado, ou nulo, no `body` Response. / By **a** `plate`. Returns a `ResponseEntity` with an instance of the consulted object, or null, in `body` of the `Response`.  
   
-###### More details about the future versions _(end-points, methods, features)_, see [project documentation, at `ROADMAP.md`](project-resources/documentation/ROADMAP.md "ROADMAP.md").
+###### More details about the future versions _(end-points, methods, features)_, see [project documentation, at `project-resources/documentation/ROADMAP.md`](project-resources/documentation/ROADMAP.md "ROADMAP.md").
   
 &nbsp;  
 &nbsp;  
 &nbsp;
   
-<a name="tecnologias"></a>
-## TECNOLOGIAS
+<a name="technologies"></a>
+## TECHNOLOGIES
 + Java, Spring Boot, Spring Web, Spring Data JPA (Hibernate), Maven, PostgreSQL, Apache-Tomcat, Postman;
 + Built as a standalone/self-contained application with "file.jar" packaging (the famous "fat-jar", which contains the built-in Apache-Tomcat server);  
   
@@ -170,7 +160,7 @@ All features from last version, plus...
 <a name="gitflow"></a>
 ## GITFLOW
   
-### *GITFLOW* Influences on the Base Structure Of This Projeto
+### *GITFLOW* Influences On The Base Structure Of This Projeto
 + **_main_**: primary branch, the initial one, and the main one, which receive (merging) else branches, then to perform the full-test of the version before to release it. This is the branch from which the "release branch" occurs; This branch must never be deleted;
 + main/**_develop_**: the base-branch to the application development, although it is possible to occur some implementation in it, it is discouraged, as exists specifics branches to the features coding, such as the pointed ones below. This branch must never be deleted;
   - main/develop/**_feature_**/**_shot_alias_**: this branch is created exclusively for feature implementation, a chosen feature according to the Project Backlog and Sprint Backlog, as it can be noticed through this feature's name. After the feature is completed and merged with the source branch, you can (or not) delete the branch according to the development team's culture and the needs of the project;  
@@ -181,13 +171,13 @@ All features from last version, plus...
 &nbsp;  
 &nbsp;  
   
-<a name="arquiitetura"></a>
-## ARQUITETURA
+<a name="architecture"></a>
+## ARCHITECTURE
 Description...  
   
 &nbsp;
   
-### Pacotes
+### Packages
 **[root]**  
 **/**
 * src/
@@ -238,19 +228,19 @@ Description...
   
 &nbsp;
   
-<a name="classes-propositos"></a>
-### CLASSES E SEUS PROPÓSITOS
+<a name="classes-purposes"></a>
+### Classes And Its Purposes
 Description...  
   
 &nbsp;  
 &nbsp;  
 &nbsp;  
   
-<a name="autor"></a>
-## AUTOR
+<a name="author"></a>
+## AUTHOR
 ### Ronaldo Marques.
 ###### | https://ronaldomarques.dev | [linkedin @ronaldo marques](https://linkedin.com/in/ropimasi/) | [twitter @ropimasi](https://twitter.com/ropimasi/) | [insta @ropimasi](https://instagram.com/ropimasi/) | ronaldomarques@email.com |
 ### Thank you ```_/\_``` .  
-&nbsp;  
   
+&nbsp;  
   

@@ -1,6 +1,26 @@
-/* Copyright notes... */
+/**
+ * DIREITOS, LICENSA E ISENÇÃO DE RESPONSABILIDADE:
+ * Este arquivo é parte integrante, indivisível, inseparável de um projeto particular, o qual tem
+ * seu uso expressamente exclusivo à seu autor, Ronaldo Marques (ronaldomarques@email.com ,
+ * http://ronaldomarques.dev);
+ * É vetado qualquer utilização, venda, aluguél, distribuição, em partes ou integral deste projeto;
+ * Este projeto tem finalidade exclusiva de demonstração de conhecimento e habilidades no
+ * desenvolvimento de software para apresentação de portfólio e processos de recrutamento;
+ * Sendo assim, o autor deste projeto (Ronaldo Marques) não reconhece nem assume qualquer
+ * responsabilidade pela utilização do mesmo, tão pouco por qualquer possível reflexos ou
+ * consequência de tal utilização.
+ * ---
+ * RIGHTS, LICENSE AND DISCLAIMER:
+ * This file is an integral, indivisible, inseparable part of a particular project, which has its
+ * use expressly exclusive to its author, Ronaldo Marques (ronaldomarques@email.com ,
+ * http://ronaldomarques.dev);
+ * Any use, sale, rental, distribution, in parts or integral of this project is prohibited;
+ * This project has the sole purpose of demonstrating knowledge and skills in software development
+ * for portfolio presentations and recruitment processes;
+ * Therefore, the author of this project (Ronaldo Marques) does not recognize or assume any
+ * responsibility for the use of it, neither for any possible reflexes or consequence of such use.
+ */
 package dev.ronaldomarques.algafood.domain.service;
-
 
 import javax.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +29,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import dev.ronaldomarques.algafood.domain.exception.EntidadeEmUsoException;
 import dev.ronaldomarques.algafood.domain.exception.EntidadeNaoEncontradaException;
+import dev.ronaldomarques.algafood.domain.exception.EntidadeNaoPersistidaException;
 import dev.ronaldomarques.algafood.domain.model.entity.CidadeEntity;
 import dev.ronaldomarques.algafood.domain.model.entity.EstadoEntity;
 import dev.ronaldomarques.algafood.domain.model.repository.CidadeRepository;
@@ -35,25 +56,32 @@ public class CidadeCadastroService {
 	
 	
 	
+	/**
+	 * Aplica regras de negócio e salva a insancia 'estado' na base de dados, como novo registro se
+	 * seu atributo 'cidade.id' é nulo, ou como atualização se seu atributo 'cidade.id' possui
+	 * valor.
+	 * @param  cidadeNova                     // TODO:
+	 * @throws EntidadeNaoPersistidaException se atributo 'id' possui valor não-nulo porém
+	 *                                        inexistente na entidade
+	 *                                        'EstadoEntity' persistida.
+	 * @throws ArgumentoIlegalException       argumento não é uma instância em estado 'managed',
+	 *                                        ou não é instância de objeto.
+	 * @return                                // TODO:
+	 */
 	public CidadeEntity salvar(CidadeEntity cidadeNova) {
-		/**
-		 * Aplica regras de negócio e salva a insancia 'estado' na base de dados, como novo registro se seu
-		 * atributo 'cidade.id' é nulo, ou como atualização se seu atributo 'cidade.id' possui valor.
-		 * @throws EntidadeNaoPersistidaException se atributo 'id' possui valor não-nulo porém inexistente na entidade
-		 *                                        'EstadoEntity' persistida.
-		 * @throws ArgumentoIlegalException       argumento não é uma instância em estado 'managed',
-		 *                                        ou não é instância de objeto.
-		 */
-		
 		/* Didático: Aqui vão as regras de negócio. Tais como condições obrigatórias, validações.
 		 * 
-		 * Regra de negócio #1: para salvar um objeto 'CidadeEntity' é obrigatório atribuir a seu atributo 'estado' um
+		 * Regra de negócio #1: para salvar um objeto 'CidadeEntity' é obrigatório atribuir a seu
+		 * atributo 'estado' um
 		 * objeto 'EstadoEntity' existente na DB. */
 		
 		try {
-			/* Até o presente momento, não há regras de negócio aplicáveis neste escopo (service) para sanar de forma
-			 * programática as possíveis EXCEPTIONS, sendo assim, as mesmas serão repassadas ao escopo superior
-			 * (controller), porém, traduzidas, para melhor exepriência do usuários consumidor da API. */
+			/* Até o presente momento, não há regras de negócio aplicáveis neste escopo (service)
+			 * para sanar de forma
+			 * programática as possíveis EXCEPTIONS, sendo assim, as mesmas serão repassadas ao
+			 * escopo superior
+			 * (controller), porém, traduzidas, para melhor exepriência do usuários consumidor da
+			 * API. */
 			EstadoEntity estado = estadoRepo.findById(cidadeNova.getEstado().getId())
 					.orElseThrow(() -> new EmptyResultDataAccessException(
 							"estadoRepo.findById(cidade.getEstado().getId()) = EstadoEntity não encontrado. Ou cidade"
@@ -85,6 +113,11 @@ public class CidadeCadastroService {
 	
 	
 	
+	/**
+	 * Descrição
+	 * @param  id //TODO:
+	 * @return    //TODO:
+	 */
 	public CidadeEntity excluir(Long id) {
 		
 		/* Aqui vão as regras de negócio.

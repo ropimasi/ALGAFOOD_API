@@ -1,6 +1,26 @@
-/* Copyright notes... */
+/**
+ * DIREITOS, LICENSA E ISENÇÃO DE RESPONSABILIDADE:
+ * Este arquivo é parte integrante, indivisível, inseparável de um projeto particular, o qual tem
+ * seu uso expressamente exclusivo à seu autor, Ronaldo Marques (ronaldomarques@email.com ,
+ * http://ronaldomarques.dev);
+ * É vetado qualquer utilização, venda, aluguél, distribuição, em partes ou integral deste projeto;
+ * Este projeto tem finalidade exclusiva de demonstração de conhecimento e habilidades no
+ * desenvolvimento de software para apresentação de portfólio e processos de recrutamento;
+ * Sendo assim, o autor deste projeto (Ronaldo Marques) não reconhece nem assume qualquer
+ * responsabilidade pela utilização do mesmo, tão pouco por qualquer possível reflexos ou
+ * consequência de tal utilização.
+ * ---
+ * RIGHTS, LICENSE AND DISCLAIMER:
+ * This file is an integral, indivisible, inseparable part of a particular project, which has its
+ * use expressly exclusive to its author, Ronaldo Marques (ronaldomarques@email.com ,
+ * http://ronaldomarques.dev);
+ * Any use, sale, rental, distribution, in parts or integral of this project is prohibited;
+ * This project has the sole purpose of demonstrating knowledge and skills in software development
+ * for portfolio presentations and recruitment processes;
+ * Therefore, the author of this project (Ronaldo Marques) does not recognize or assume any
+ * responsibility for the use of it, neither for any possible reflexes or consequence of such use.
+ */
 package dev.ronaldomarques.algafood.api.controller;
-
 
 import static dev.ronaldomarques.algafood.infrastructure.exception.DescritorDeException.descreverInesperadaException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +48,8 @@ import dev.ronaldomarques.algafood.infrastructure.exception.ArgumentoIlegalExcep
 /**
  * This is a simple didadic project. A RESTful-API built with on JAVA and Spring Framework.
  * @author Ronaldo Marques.
- * @see    CozinhaController, RestauranteController, CidadeController, FormaPagamentoController, PermissaoController...
+ * @see    CozinhaController, RestauranteController, CidadeController, FormaPagamentoController,
+ *         PermissaoController...
  *         // TODO: Terminar de listar demais 'controllers' na Javadocs tag 'see'.
  * @since  2020-09-09.
  */
@@ -86,8 +107,10 @@ public class EstadoController {
 	public ResponseEntity<?> buscar(@PathVariable Long id) {
 		
 		try {
-			/* Didático: Como .buscar() .procurar() .pegar() não alteram o status da aplicação, então pode acessar
-			 * diretamente o repositório. Nesta abordagem, se houver regras de negócio na operação de buscar um recurso,
+			/* Didático: Como .buscar() .procurar() .pegar() não alteram o status da aplicação,
+			 * então pode acessar
+			 * diretamente o repositório. Nesta abordagem, se houver regras de negócio na operação
+			 * de buscar um recurso,
 			 * estas regras ficam na camada 'service', devendo então, usar o método a baixo: */
 			// return ResponseEntity.status(HttpStatus.OK).body(estadoCadastroServ.procurar(id));
 			return ResponseEntity.ok(estadoRepo.findById(id).get());
@@ -111,7 +134,8 @@ public class EstadoController {
 	public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody EstadoEntity estadoNovo) {
 		
 		/**
-		 * Atualiza a entidade 'EstadoEntity' que possui valor 'id' em seu atributo 'id' na base de dados, salvando a
+		 * Atualiza a entidade 'EstadoEntity' que possui valor 'id' em seu atributo 'id' na base de
+		 * dados, salvando a
 		 * nova entidade 'EstadoEntity' representada por 'cozinhaNova' em seu lugar.
 		 */
 		
@@ -132,7 +156,8 @@ public class EstadoController {
 		
 	}
 	
-	/* Já que a entidade 'Estado' só possui uma proprieadde(campo) além da chave primária, é inviável implementar método
+	/* Já que a entidade 'Estado' só possui uma proprieadde(campo) além da chave primária, é
+	 * inviável implementar método
 	 * '.atualizarParcial()' para ela.
 	 * 
 	 * @PatchMapping("/{id}")
