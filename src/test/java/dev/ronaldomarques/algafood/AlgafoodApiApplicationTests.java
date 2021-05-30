@@ -6,9 +6,16 @@ import org.junit.jupiter.api.Test;
 
 
 
+/**
+ * @author ropim
+ *
+ */
 @SpringBootTest
 public class AlgafoodApiApplicationTests {
 	
+	/**
+	 * 
+	 */
 	@Test
 	public void contextLoads() {}
 	

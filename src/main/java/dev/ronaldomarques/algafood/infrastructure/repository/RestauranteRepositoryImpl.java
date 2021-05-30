@@ -20,13 +20,18 @@
  * Therefore, the author of this project (Ronaldo Marques) does not recognize or assume any
  * responsibility for the use of it, neither for any possible reflexes or consequence of such use.
  */
-package dev.ronaldomarques.algafood.domain.model.repository;
+package dev.ronaldomarques.algafood.infrastructure.repository;
 
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
-import org.springframework.data.jpa.repository.JpaRepository;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.springframework.stereotype.Repository;
-import dev.ronaldomarques.algafood.domain.model.entity.CozinhaEntity;
+
+import dev.ronaldomarques.algafood.domain.model.entity.RestauranteEntity;
+import dev.ronaldomarques.algafood.domain.model.repository.RestauranteRepositoryCmzQrs;
 
 
 
@@ -35,29 +40,23 @@ import dev.ronaldomarques.algafood.domain.model.entity.CozinhaEntity;
  * @author Ronaldo Marques.
  */
 @Repository
-public interface CozinhaRepository extends JpaRepository<CozinhaEntity, Long> {
-	/* Este ERA um repositório orientado à persistencia: 'POR'. */
-	/* Quando um 'repository' é orientado à 'collection' ele tem como uma das abstrações imitar uma
-	 * 'collection'. E os
-	 * tipos 'collections' seguem padrões de nomenclatura próprios, por exemplo:
-	 * public abstract CozinhaEntity guardar(CozinhaEntity cozinha);
-	 * public abstract void eliminar(CozinhaEntity cozinha);
-	 * public abstract CozinhaEntity porId(Long id);
-	 * public abstract List<CozinhaEntity> todas(); */
+public class RestauranteRepositoryImpl implements RestauranteRepositoryCmzQrs {
 	
-	/* Métodos comentados para dar lugar ao modo JpaHibernate: */
-	/* public abstract CozinhaEntity gravar(CozinhaEntity cozinhaEntity);
-	 * public abstract CozinhaEntity remover(Long id);
-	 * public abstract CozinhaEntity pegar(Long id);
-	 * public abstract List<CozinhaEntity> listar(); */
+	@PersistenceContext
+	private EntityManager em;
 	
-	/* Simple test using the 'property name'. */
-	CozinhaEntity nome(String nome);
-	/* Simple test using the 'find' prefixe, 'By' key-word, and 'Property name'. */
-	Optional<CozinhaEntity> findByNome(String nome);
-	/* Simple test using the 'find' prefixe, 'By' key-word, and 'Property name'. */
-	List<CozinhaEntity> findListaByNome(String nome);
-	/* Simple test using the 'find' prefixe, 'By' key-word, and 'Property name'. */
-	List<CozinhaEntity> findListaByNomeContaining(String nome);
+	
+	
+	@Override
+	public List<RestauranteEntity> buscarCozinhaFreteMenor(String cozinhaNome, BigDecimal taxaFreteMenor) {
+		
+		var jpql = "FROM RestauranteEntity WHERE (cozinha.nome LIKE :cozinhaNome AND taxaFrete <= :taxaFreteMenor)";
+		
+		return em.createQuery(jpql, RestauranteEntity.class)
+				.setParameter("cozinhaNome", "%" + cozinhaNome + "%")
+				.setParameter("taxaFreteMenor", taxaFreteMenor)
+				.getResultList();
+		
+	}
 	
 }

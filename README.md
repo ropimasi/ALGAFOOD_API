@@ -1,25 +1,28 @@
 # ALGAFOOD_API
-API RESTful para negócio fictício, no ramo de entregas oriundas de estabelecimentos fornecedores de comidas.  
-[Painel SCRUM-KANBAN do Projecto: **não possui até o momento**](#).  
-    
+RESTful API for fictitious business, in the field of deliveries from food supply establishments.  
+[SCRUM-KANBAN Project Painel: **It's non-existent so far**](#).  
+  
+&nbsp;  
+  
 *Started 202008170000-UTC/GMT/Z-time*  
-*Last change 202105181440-UTC/GMT/Z-time*  
+*Last change 202105301427-UTC/GMT/Z-time*  
   
 &nbsp;  
 &nbsp;  
 &nbsp;  
   
-<a name="o-que-e"></a>
-## O QUÊ É
-Respositório do projéto didático de meu curso **Especialista Spring REST** que contém: API RESTful para negócio fictício, no ramo de entregas oriundas de estabelecimentos fornecedores de comidas. API cuja tem finalidade de gerir cadastro cozinhas, restaurantes, pratos, formas de pagamentos, usuários, pedidos, e muito mais, conforme poderá ser conferido na [documentção do projeto em breve](#).  
+<a name="what-is"></a>
+## WHAT IS
+Respositório do projéto didático de meu curso **Especialista Spring REST** que contém: API RESTful para negócio fictício, no ramo de entregas oriundas de estabelecimentos fornecedores de comidas. API cuja tem finalidade de gerir cadastro cozinhas, restaurantes, pratos, formas de pagamentos, usuários, pedidos, e muito mais, conforme poderá ser conferido na [documentção do projeto em breve](#).
+Didadic project's repository for my *Spring REST Specialist** trainning, that contains: A RESTful API for a ficticious business, in the filed of deliveries from food suply estableshments. API whose purpose is to manage registration of kitchens, restaurants, dishes, forms of payments, users, orders, and much more, as can be seen in the [project documentation soon](#).  
   
 &nbsp;  
 &nbsp;  
 &nbsp;  
   
-<a name="lista-de-conteudo"></a>
-## LISTA DE CONTEÚDO
-* [O QUÊ É](#o-que-e)
+<a name="list-of-content"></a>
+## LIST OF CONTENT
+* [WHAT IS](#what-is)
 * [VERSIONS](#versions)
   + [VERSIONING](#versioning)
     - [Example](#versioning-example)
@@ -27,11 +30,12 @@ Respositório do projéto didático de meu curso **Especialista Spring REST** qu
   + [PREVIOUS VERSION](#previous-version)
 * [GUIDELINE ROADMAP](#guideline-roadmap)
   + [NEXT VERSION](#next-version)
-  + [OBJECTIVE VERSION](#objective version)
-* [TECHNOLOGIES](#technolgies)
-* [GITFLOW](#gitflow)
-* [ARCHITECTURE](#archtecture)
-  + [CLASSES AND ITS PURPOSES](#classes-purposes)
+  + [OBJECTIVE VERSION](#objective-version)
+* [TECHNOLOGIES](#technologies)
+* [GITFLOW INFLUENCES](#gitflow-influences)
+* [ARCHITECTURE](#architecture)
+  + [PACKAGES & FILES](#packages-files)
+  + [FOLDERS & FILES](#folders-files)
 * [AUTHOR](#author)  
   
 &nbsp;  
@@ -75,6 +79,7 @@ Thus, **ALGAFOOD_API** uses **_SemVer_** for its versioning. **_SemVer_** is a s
   
 <a name="current-version"></a>
 ### CURRENT VERSION 0.1.0-dev
+Description...  It will be continued. I am right now studing and getting **references** to discuss this topic.
 + Feature X ...
   - On http-method foo bar bax `GET`, URI-end-point `/X... lorem ipsum...`.
   
@@ -96,7 +101,7 @@ Thus, **ALGAFOOD_API** uses **_SemVer_** for its versioning. **_SemVer_** is a s
   
 <a name="previous-version"></a>
 ### PREVIOUS VERSION 0.0.0-___
-Description...  
+There is no previous version.  
   
 ###### More details about the past versions _(end-points, methods, features)_, see [project documentation, at `project-resources/documentation/CHANGELOG.md`](project-resources/documentation/CHANGELOG.md "CHANGELOG.md").
   
@@ -151,20 +156,25 @@ All features from last version, plus...
   
 <a name="technologies"></a>
 ## TECHNOLOGIES
-+ Java, Spring Boot, Spring Web, Spring Data JPA (Hibernate), Maven, PostgreSQL, Apache-Tomcat, Postman;
-+ Built as a standalone/self-contained application with "file.jar" packaging (the famous "fat-jar", which contains the built-in Apache-Tomcat server);  
++ Java 8+, OpenJdk-11
++ Spring Boot, Spring Web, Spring Data JPA (Hibernate)
++ Apache-Maven
++ Apache-Tomcat, PostgreSQL;
++ Postman;
+> Built as a standalone/self-contained application with `file.jar` packaging (the famous _`fat-jar`_, which contains the built-in Apache-Tomcat server).  
   
 &nbsp;  
 &nbsp;  
+&nbsp;  
   
-<a name="gitflow"></a>
+<a name="gitflow-influences"></a>
 ## GITFLOW
   
 ### *GITFLOW* Influences On The Base Structure Of This Projeto
 + **_main_**: primary branch, the initial one, and the main one, which receive (merging) else branches, then to perform the full-test of the version before to release it. This is the branch from which the "release branch" occurs; This branch must never be deleted;
 + main/**_develop_**: the base-branch to the application development, although it is possible to occur some implementation in it, it is discouraged, as exists specifics branches to the features coding, such as the pointed ones below. This branch must never be deleted;
-  - main/develop/**_feature_**/**_shot_alias_**: this branch is created exclusively for feature implementation, a chosen feature according to the Project Backlog and Sprint Backlog, as it can be noticed through this feature's name. After the feature is completed and merged with the source branch, you can (or not) delete the branch according to the development team's culture and the needs of the project;  
-  - main/develop/**_bugfix_**/**_bug's_short_alias_**: this branch is created exclusively for currection of the bug (or else issues) mentioned at the branch's alias, which used to be found in test phase (or Q&A team). After the job on the bug/issue has been completed and merged with the source branch, you can (or not) delete the branch according to the development team's culture and the needs of the project;  
+  - main/develop/**_feature_**/**_short_alias_**: this branch is created exclusively for feature implementation, a chosen feature according to the Project Backlog and Sprint Backlog, as it can be noticed through this feature's name. After the feature is completed and merged with the source branch, you can (or not) delete the branch according to the development team's culture and the needs of the project;
+  - main/develop/**_bugfix_**/**_bug's_short_alias_**: this branch is created exclusively for currection of the bug (or else issues) mentioned at the branch's alias, which used to be found in test phase (or Q&A team). After the job on the bug/issue has been completed and merged with the source branch, you can (or not) delete the branch according to the development team's culture and the needs of the project;
 + main/**_hotfix_**/**_hotfix's_short_alias_**: this branch is created exclusively for correction of the max priority bugs (or else issues) mentioned at the branch's alias, which are found in the prerelease test phase (or Q&A team) or more commonly found by the user, so reported after released.  
   
 &nbsp;  
@@ -173,64 +183,61 @@ All features from last version, plus...
   
 <a name="architecture"></a>
 ## ARCHITECTURE
-Description...  
+Description...  It will be continued. I am right now studing and getting **references** to discuss this topic.
   
 &nbsp;
   
-### Packages
+<a name="packages-files"></a>
+### Packages & Files
 **[root]**  
 **/**
 * src/
   + main/
     + java/
-      - **dev.ronaldomarques.dryve.challenge1/**
+      - **dev.ronaldomarques.algafood/**
         - api/
           - controller/
           - exception/
-          - **packages...it ll be continued...**
+          - model/
         - domain/
+          - exception/
           - model
             - entity
             - repository
           - service
-          - **packages...it ll be continued...**
-        - **`files`...it ll be continued...**
-    + resources
-      - libs/
-        - `my-java-utility-pack-0.4.0-beta+202103250350.jar`
-      - `application.properties`
-      - `import.sql`
-  + test/
-    + java/
-      - **dev.ronaldomarques.dryve.challenge1/**
-        - `DryveChallenge1ApplicationTests.java`
-        - `MyPersonalTests.java`
-* project-resources/
-  + documentation/
-    - screenshots/
-      - `several files`
-    - test-results/
-      - `several files`
-    - `CHANGELOG.md`
-    - `CONTRIBUTORS.md`
-    - `REQUIREMENTS.md`
-    - `ROADMAP.md`
-    - `Dryve-Challenge-1-Backend-Invitation.pdf`
-  + images/
-    - icons/
-      - `several files`
-    - logos/
-      -  `several brand-folders/`
-    - `several files`  
-
-/`README.md`
-/`pom.xml`
+        - infrastructure/
+          - excption/
+          - repository/
+          - service/
+      - `AlgafoodApiApplication.java`
   
 &nbsp;
   
-<a name="classes-purposes"></a>
-### Classes And Its Purposes
-Description...  
+<a name="folders-files"></a>
+### Folders & Files
+**[root]**  
+**/**
+* src/
+  + main/
+    + resources/
+      - META-INF/
+        - `additional-spring-configuration-metadata.json`
+        - `rom.xml`
+      - `application.properties`
+      - `import.sql`
+    + project-resources/
+      - documentation/
+        - `CHANGELOG.md`
+        - `CONTRIBUTORS.md`
+        - `diagrama-de-classes-do-dominio.jpg`
+        - `further-information-about-tech-resources.md`
+        - `REQUIREMENTS.md`
+        - `ROADMAP.md`
+      - libs/
+        - `my-java-utility-pack-0.5.0-dev+202104081434.jar`
+
+* `pom.xml`
+* `README.md`  
   
 &nbsp;  
 &nbsp;  

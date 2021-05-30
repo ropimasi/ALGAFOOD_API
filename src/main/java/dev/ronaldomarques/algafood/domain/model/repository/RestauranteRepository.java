@@ -22,10 +22,15 @@
  */
 package dev.ronaldomarques.algafood.domain.model.repository;
 
-
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import dev.ronaldomarques.algafood.domain.model.entity.RestauranteEntity;
+
 
 
 /**
@@ -33,9 +38,12 @@ import dev.ronaldomarques.algafood.domain.model.entity.RestauranteEntity;
  * @author Ronaldo Marques.
  */
 @Repository
-public abstract interface RestauranteRepository extends JpaRepository<RestauranteEntity, Long> {
+public abstract interface RestauranteRepository extends
+		JpaRepository<RestauranteEntity, Long>,
+		RestauranteRepositoryCmzQrs {
 	/* Este ERA um 'repositório orientado à persistencia': 'POR'. */
-	/* Quando um 'repository' é orientado à 'collection' ele tem como uma das abstrações imitar uma 'collection'. E os
+	/* Quando um 'repository' é orientado à 'collection' ele tem como uma das abstrações imitar uma
+	 * 'collection'. E os
 	 * tipos 'collections' seguem padrões de nomenclatura próprios, por exemplo:
 	 * public abstract RestauranteEntity guardar(RestauranteEntity restaurante);
 	 * public abstract void eliminar(RestauranteEntity restaurante);
@@ -47,4 +55,51 @@ public abstract interface RestauranteRepository extends JpaRepository<Restaurant
 	 * public abstract RestauranteEntity remover(Long id);
 	 * public abstract RestauranteEntity buscar(Long id);
 	 * public abstract List<RestauranteEntity> listar(); */
+	
+	/* Simple test using the 'property name'. */
+	RestauranteEntity taxaFrete(BigDecimal taxaFrete);
+	/* Simple test using the 'find' prefixe, 'By' key-word, and 'Property name'. */
+	Optional<RestauranteEntity> findByTaxaFrete(BigDecimal taxaFrete);
+	/* Simple test using the 'find' prefixe, 'By' key-word, and 'Property name'. */
+	List<RestauranteEntity> findListaByTaxaFrete(BigDecimal taxaFrete);
+	/* Simple test using the 'find' prefixe, 'By' key-word, and 'Property name'. */
+	List<RestauranteEntity> findListaByTaxaFreteBetween(BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal);
+	/* Simple test. */
+	List<RestauranteEntity> findListaByTaxaFreteBetweenAndCozinhaNomeContaining(BigDecimal taxaFreteInicial,
+			BigDecimal taxaFreteFinal, String cozinhaNome);
+	/* Simple test. */
+	List<RestauranteEntity> findAllByNomeContaining(String nome);
+	/* Simple test. */
+	List<RestauranteEntity> findTop2ByNomeContaining(String nome);
+	/* Simple test. */
+	boolean existsByNome(String nome);
+	/* Simple test. */
+	boolean existsByTaxaFrete(BigDecimal taxaFrete);
+	
+	/* Simple test de NamedQuery com @Query. */
+	@Query("FROM RestauranteEntity WHERE (taxaFrete BETWEEN :taxaInicial AND :taxaFinal) "
+			+ "AND (cozinha.nome LIKE %:cozinhaNome%) ")
+	List<RestauranteEntity> porTaxaECozinha(
+			@Param("taxaInicial") BigDecimal taxaFreteInicial,
+			@Param("taxaFinal") BigDecimal taxaFreteFinal,
+			@Param("cozinhaNome") String cozinhaNome);
+	
+	/* EXTERNAL a simple test de NamedQuery. */
+	List<RestauranteEntity> porTaxaECozinhaExt(
+			@Param("taxaInicial") BigDecimal taxaFreteInicial,
+			@Param("taxaFinal") BigDecimal taxaFreteFinal,
+			@Param("cozinhaNome") String cozinhaNome);
+	
 }
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
