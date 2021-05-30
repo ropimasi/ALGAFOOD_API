@@ -13,8 +13,9 @@ RESTful API for fictitious business, in the field of deliveries from food supply
   
 <a name="what-is"></a>
 ## WHAT IS
-Respositório do projéto didático de meu curso **Especialista Spring REST** que contém: API RESTful para negócio fictício, no ramo de entregas oriundas de estabelecimentos fornecedores de comidas. API cuja tem finalidade de gerir cadastro cozinhas, restaurantes, pratos, formas de pagamentos, usuários, pedidos, e muito mais, conforme poderá ser conferido na [documentção do projeto em breve](#).
 Didadic project's repository for my *Spring REST Specialist** trainning, that contains: A RESTful API for a ficticious business, in the filed of deliveries from food suply estableshments. API whose purpose is to manage registration of kitchens, restaurants, dishes, forms of payments, users, orders, and much more, as can be seen in the [project documentation soon](#).  
+&nbsp;  
+_pt-BR_ Respositório do projéto didático de meu curso **Especialista Spring REST** que contém: API RESTful para negócio fictício, no ramo de entregas oriundas de estabelecimentos fornecedores de comidas. API cuja tem finalidade de gerir cadastro cozinhas, restaurantes, pratos, formas de pagamentos, usuários, pedidos, e muito mais, conforme poderá ser conferido na [documentção do projeto em breve](#).  
   
 &nbsp;  
 &nbsp;  
